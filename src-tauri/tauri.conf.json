@@ -1,0 +1,81 @@
+{
+  "package": {
+    "productName": "vulnus-launcher",
+    "version": "0.1.0"
+  },
+  "build": {
+    "distDir": "../dist",
+    "devPath": "http://localhost:3000",
+    "beforeDevCommand": "yarn dev",
+    "beforeBuildCommand": "yarn build"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.tauri.dev",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [],
+      "externalBin": [],
+      "copyright": "",
+      "category": "DeveloperTool",
+      "shortDescription": "",
+      "longDescription": "",
+      "deb": {
+        "depends": [],
+        "useBootstrapper": false
+      },
+      "macOS": {
+        "frameworks": [],
+        "useBootstrapper": false,
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "providerShortName": null,
+        "entitlements": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "updater": {
+      "active": false
+    },
+    "allowlist": {
+      "all": true,
+      "fs":{
+        "scope":["$APP/.data/*","$DOCUMENT/vulnus-launcher/*"]
+      },
+      "shell": {
+        "all": false,
+        "execute": false,
+        "open": "",
+        "sidecar": false
+      },
+      "http": {
+        "all": false,
+        "request": false,
+        "scope": ["https://api.github.com/repos/beat-game-dev/*","https://github.com/beat-game-dev/Vulnus/releases/download/*"]
+      }
+    },
+    "windows": [
+      {
+        "title": "Vulnus Launcher",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}
