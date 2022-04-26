@@ -1,0 +1,28 @@
+{
+    "DebugEnabled": false,
+    "CameraMode": 0,
+    "CursorTrail": false,
+    "DriftEnabled": true,
+    "GridVisible": true,
+    "Offset": 0.0,
+    "Sensitivity": 1.0,
+    "ApproachDistance": 50.0,
+    "ApproachTime": 1.0,
+    "HitEnabled": true,
+    "MissEnabled": true,
+    "ParticlesEnabled": false,
+    "Colors": [
+        {
+            "R": 0,
+            "G": 244,
+            "B": 114,
+            "A": 182
+        },
+        {
+            "R": 219,
+            "G": 206,
+            "B": 212,
+            "A": 255
+        }
+    ]
+}

@@ -22,7 +22,7 @@ tokio = { version = "1.17.*", features= ["full"] }
 
 reqwest = "*"
 zip = "*"
-
+symlink="*"
 
 [features]
 # by default Tauri runs in production mode

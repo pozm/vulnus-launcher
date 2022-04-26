@@ -32,7 +32,7 @@ import { getTagDownload, getTagFromRef, installVersion,launchVulnus,versionInsta
 	})
 
 	function installVulnus() {
-		installVersion(chosenVersion,getTagDownload(chosenVersion)).then(_=>{
+		installVersion(chosenVersion).then(_=>{
 			isVersionInstalled = versionInstalled(chosenVersion);
 		})
 	}
@@ -51,7 +51,7 @@ import { getTagDownload, getTagFromRef, installVersion,launchVulnus,versionInsta
 	<!-- show game pictures -->
 	<div class="relative flex-1 rounded-xl overflow-hidden" >
 		<div class="absolute vulnusBg w-full h-full rounded-xl overflow-hidden" style:background-image={`url(${gameplayGif})`} />
-		<div class="absolute h-full w-[33.3%] right-0 p-2 " >
+		<div class="absolute h-full w-80 right-0 p-2 " >
 			<div class="backdrop-blur-xl w-full h-full border-2 border-solid border-zinc-600/20 rounded-xl bg-zinc-900/40 flex flex-col items-center p-2" >
 				<h2 class="text-gray-200 text-3xl mb-2" >Select version</h2>
 				<p class="text-gray-400" >
@@ -67,6 +67,8 @@ import { getTagDownload, getTagFromRef, installVersion,launchVulnus,versionInsta
 									<div >
 										<button on:click={()=>{
 											chosenVersion = version;
+											console.log("choose ",version)
+											isVersionInstalled = versionInstalled(chosenVersion)
 											showDropdown = false;
 										}} class={`appearance-none min-w-full block select-none ${version == chosenVersion ? "text-gray-600" : "text-gray-400"}`} >{version}</button>
 										<!-- <label on:change={()=>{
