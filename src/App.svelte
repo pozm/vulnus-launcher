@@ -12,6 +12,7 @@ import { onDestroy, onMount } from 'svelte';
 import home_ico from './assets/svg/homeico.svg'
 import settings_ico from './assets/svg/settingsico.svg'
 import SettingsPage from './lib/pages/SettingsPage.svelte';
+import { fade, fly } from 'svelte/transition';
 
 	let updatePath = "";
 	let PathActive = false;
@@ -42,6 +43,7 @@ import SettingsPage from './lib/pages/SettingsPage.svelte';
 
 	let interval;
 
+
 	let SidebarHovering = false;
 
 	// onMount(()=>{
@@ -59,14 +61,14 @@ import SettingsPage from './lib/pages/SettingsPage.svelte';
 </script>
 <div class="flex min-h-screen" >
 	<NotificationHandler/>
-	<div class="min-h-screen select-none w-14 bg-zinc-800 flex flex-col space-y-2 py-2 hover:w-32 transition-all items-center hover:items-start hover:px-2" on:mouseleave={()=>SidebarHovering=false} on:mouseenter={()=>SidebarHovering=true} >
+	<div class="min-h-screen select-none w-14 bg-zinc-800 flex flex-col space-y-2 py-2 hover:w-32 transition-all duration-200 items-center hover:items-start hover:px-2" on:mouseleave={()=>SidebarHovering=false} on:mouseenter={()=>SidebarHovering=true} >
 		{#each PagesMap as page,i}
 			<div class={`py-2 cursor-pointer w-full flex flex-row ${!SidebarHovering ? "justify-center" : "justify-start"}`} on:click={()=>ShowPage=i} >
 				<!-- {@debug page} -->
 				<!-- <svg src /> -->
 				<svelte:component class="h-7 w-7 text-gray-300" this={page.s} />
 				{#if SidebarHovering}
-				<p class="text-neutral-400 flex items-center w-full justify-end" >{page.n}</p>
+				<p in:fly={{x:-20}} out:fly={{x:-20,duration:200}} class="text-neutral-400 flex items-center w-full justify-end" >{page.n}</p>
 				
 				{/if}
 			</div>

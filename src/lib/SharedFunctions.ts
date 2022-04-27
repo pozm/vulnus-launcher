@@ -14,11 +14,19 @@ export function getTagFromRef(ref:string) {
 export function installVersion(tag,desktop=false) {
 	event.emit("client://notification",{title:`Please wait`,data:`Installing version ${tag} may take a few seconds or minutes depending on your connection.`})
 	return invoke('install_vulnus',{tag,desktop}).then(_=>{
-		console.log("OK")
+		console.log("OKI")
 		event.emit("client://notification",{title:`version ${tag} has been installed`,data:`Have fun hitting those notes`})
 		return _
 	},e=>e)
 }
+
+export function removeVersion(tag) {
+	return invoke("remove_vulnus",{tag}).then(_=>{
+		console.log("OKR")
+		event.emit("client://notification",{title:`version ${tag} has been removed`,data:`Maybe a different time`})
+	})
+}
+
 export function versionInstalled(tag:string): Promise<boolean> {
 	return invoke<boolean>('check_vulnus_tag',{tag})
 }

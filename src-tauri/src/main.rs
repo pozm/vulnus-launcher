@@ -12,7 +12,7 @@ use tokio::{fs::{File}, io::AsyncWriteExt};
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![install_vulnus,check_vulnus_tag])
+        .invoke_handler(tauri::generate_handler![install_vulnus,check_vulnus_tag,remove_vulnus])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -51,6 +51,16 @@ async fn check_vulnus_tag(tag:String) -> bool {
 
     let path_to_vulnus = get_vulnus_dir(Some(&tag)).join("vulnus.exe");
     path_to_vulnus.exists()
+
+}
+
+#[tauri::command]
+async fn remove_vulnus(tag:String) -> bool {
+
+
+    let path_to_vulnus = get_vulnus_dir(Some(&tag));
+    fs::remove_dir_all(path_to_vulnus).is_ok()
+	
 }
 
 #[tauri::command]

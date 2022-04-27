@@ -11,9 +11,11 @@
 		getTagFromRef,
 		installVersion,
 		launchVulnus,
+		removeVersion,
 		versionInstalled,
 	} from "../SharedFunctions";
 	import { LatestVersionsAvailable, VersionsAvailable } from "../StoreData";
+	import binIco from '../../assets/svg/binico.svg';
 
 	// let gamePictures = ["https://ichef.bbci.co.uk/news/976/cpsprodpb/16620/production/_91408619_55df76d5-2245-41c1-8031-07a4da3f313f.jpg"]
 	// let showingPicture = 0;
@@ -86,6 +88,11 @@
 
 	function installVulnus() {
 		installVersion(chosenVersion,addToDesktop).then((_) => {
+			isVersionInstalled = versionInstalled(chosenVersion);
+		});
+	}
+	function uninstallVulnus() {
+		removeVersion(chosenVersion).then((_) => {
 			isVersionInstalled = versionInstalled(chosenVersion);
 		});
 	}
@@ -194,11 +201,22 @@
 						<p class="text-gray-400">loading.../</p>
 					{:then installed}
 						{#if installed}
-							<button
-								on:click={runVulnus}
-								class="py-2 w-full shadow-sm px-12 transition-colors hover:bg-sky-600 text-gray-100 bg-sky-500 disabled:bg-sky-600/50 mt-2 rounded-lg"
-								>Play!</button
-							>
+							<div class="relative" >
+
+								<div class="flex w-full flex-row space-x-3" >
+									
+									<button
+										on:click={runVulnus}
+										class="py-2 shadow-sm px-12 flex-1 transition-colors hover:bg-sky-600 text-gray-100 bg-sky-500 disabled:bg-sky-600/50 mt-2 rounded-lg"
+										>Play!</button
+									>
+									<button
+										on:click={uninstallVulnus}
+										class="py-2 min-w-12 px-3 shadow-sm transition-colors hover:bg-rose-600 text-gray-100 bg-rose-500 disabled:bg-rose-600/50 mt-2 rounded-lg"
+										><svelte:component class="h-4 w-4" this={binIco} /></button
+									>
+								</div>
+							</div>
 						{:else}
 							<div class="my-3" >
 
