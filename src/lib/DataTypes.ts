@@ -1,6 +1,7 @@
 export interface IClientNotification {
 	title:string
-	data:string
+	data:string,
+	html?:boolean
 }
 
 export module GithubTagApi {

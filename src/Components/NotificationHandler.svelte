@@ -6,25 +6,25 @@ import { onDestroy, onMount } from "svelte";
 import type { IClientNotification } from "../lib/DataTypes";
 import { fly, fade } from 'svelte/transition';
 import { quintOut } from 'svelte/easing';
+import { get } from "svelte/store";
+import { AppNotifications } from "../lib/StoreData";
 
 
 	let unregisterListener : Promise<event.UnlistenFn>;
-	let notifications:Map<number,IClientNotification> = new Map()
-	let nc = 0;
 	onMount(()=>{
 		unregisterListener = event.listen("client://notification",(notifi: Event<string>)=>{
 			let parsedData:IClientNotification = JSON.parse(notifi.payload)
 			console.log("got notification:",parsedData)
-			let at = nc
-			notifications.set(nc++,parsedData)
-			notifications = notifications
+			let at = $AppNotifications.size
+			$AppNotifications.set(at,parsedData)
+			AppNotifications.set($AppNotifications)
 			// console.log(`add ${at}`,notifications)
 			setTimeout(()=>{
-				notifications.delete(at)
-				notifications = notifications
-				if (notifications.size == 0) {
-					nc=0;
-				} 
+				$AppNotifications.delete(at)
+				AppNotifications.set($AppNotifications)
+				// if ($AppNotifications.size == 0) {
+				// 	nc=0;
+				// } 
 				// console.log(`remove ${at}`,notifications)
 			},4.3e3)
 		})
@@ -37,12 +37,12 @@ import { quintOut } from 'svelte/easing';
 		})
 	})
 	// let notifiArr: IClientNotification[]=[]
-	$: revNoti = [...notifications].reverse();
+	// $: revNoti = [...$AppNotifications].reverse();
 </script>
 <!-- {@debug notifications} -->
 <div class="absolute h-full w-72 py-2 right-2 z-60" >
 	<div class="w-full h-full flex flex-col z-0" >
-		{#each [...notifications] as [idx,notification]}
+		{#each [...$AppNotifications] as [idx,notification]}
 			<!-- {@debug notification} -->
 			{#if notification?.data}
 				<div in:fade out:fade class="shadow-xl bg-zinc-800 border border-solid border-neutral-600 rounded-xl p-2 mt-2 z-50 w-full" >
