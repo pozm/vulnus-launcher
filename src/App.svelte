@@ -11,8 +11,10 @@ import NotificationHandler from './Components/NotificationHandler.svelte';
 import { onDestroy, onMount } from 'svelte';
 import home_ico from './assets/svg/homeico.svg'
 import settings_ico from './assets/svg/settingsico.svg'
+import info_ico from './assets/svg/infoico.svg'
 import SettingsPage from './lib/pages/SettingsPage.svelte';
 import { fade, fly } from 'svelte/transition';
+import InfoPage from './lib/pages/InfoPage.svelte';
 
 	let updatePath = "";
 	let PathActive = false;
@@ -38,7 +40,11 @@ import { fade, fly } from 'svelte/transition';
 	})
 
 	let PathIsInvalid = false;
-	let PagesMap = [{c:IndexPage,s:home_ico,n:"Home"},{c:SettingsPage,s:settings_ico,n:"Settings"}]
+	let PagesMap = [
+		{c:IndexPage,s:home_ico,n:"Home"},
+		{c:InfoPage,s:info_ico,n:"Info"},
+		{c:SettingsPage,s:settings_ico,n:"Settings"},
+	]
 	let ShowPage = 0;
 
 	let interval;
@@ -63,14 +69,9 @@ import { fade, fly } from 'svelte/transition';
 	<NotificationHandler/>
 	<div class="min-h-screen select-none w-14 bg-zinc-800 flex flex-col space-y-2 py-2 hover:w-32 transition-all duration-200 items-center hover:items-start px-1" on:mouseleave={()=>SidebarHovering=false} on:mouseenter={()=>SidebarHovering=true} >
 		{#each PagesMap as page,i}
-		{@const selected = ShowPage == i}
-		<div class={`py-2 cursor-pointer w-full flex flex-row ${!SidebarHovering ? "justify-center" : "justify-start"} ${selected? "bg-zinc-900/50" : ""} hover:bg-zinc-900/90 rounded-lg px-2`} on:click={()=>ShowPage=i} >
-				<!-- {@debug page} -->
-				<!-- <svg src /> -->
-				<!-- {#key SidebarHovering}
-					<div >
-					</div>
-					{/key} -->
+			{@const selected = ShowPage == i}
+			<div class={`py-2 cursor-pointer w-full flex flex-row ${!SidebarHovering ? "justify-center" : "justify-start"} ${selected? "bg-zinc-900/50" : ""} hover:bg-zinc-900/90 rounded-lg px-2 lastBottom`} on:click={()=>ShowPage=i} >
+
 				<svelte:component class="h-7 w-7 text-gray-300" this={page.s} />
 				{#if SidebarHovering}
 				<p in:fly={{x:-20}} out:fly={{x:-20,duration:200}} class="text-neutral-400 flex items-center w-full justify-end" >{page.n}</p>
@@ -85,3 +86,9 @@ import { fade, fly } from 'svelte/transition';
 		<svelte:component this={PagesMap[ShowPage].c} />
 	</div>
 </div>
+
+<style scoped >
+	.lastBottom:last-child {
+		margin-top:auto !important;
+	}
+</style>

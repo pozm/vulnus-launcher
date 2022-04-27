@@ -47,10 +47,24 @@ import { AppNotifications } from "../lib/StoreData";
 			{#if notification?.data}
 				<div in:fade out:fade class="shadow-xl bg-zinc-800 border border-solid border-neutral-600 rounded-xl p-2 mt-2 z-50 w-full" >
 					<h2 class="text-gray-300 text-xl" >{notification.title}</h2>
-					<p class="text-gray-400 text-sm w-full break-words" >{notification.data}</p>
+					<span class="text-gray-400 text-sm w-full break-words" >
+						{#if notification.html}
+							{@html notification.data}
+						{:else}
+							{notification.data}
+						{/if}
+					</span>
 				</div>
 			{/if}
 		{/each}
 	</div>
 </div>
 <slot/>
+
+<style scoped >
+
+	a {
+		color:rgb(249 168 212)
+	}
+
+</style>

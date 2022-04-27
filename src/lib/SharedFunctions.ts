@@ -13,7 +13,7 @@ export function getTagFromRef(ref:string) {
 }
 export function installVersion(tag,desktop=false) {
 	event.emit("client://notification",{title:`Please wait`,data:`Installing version ${tag} may take a few seconds or minutes depending on your connection.`})
-	return invoke('install_vulnus',{tag,desktop}).then(_=>{
+	return invoke('install_vulnus_progress',{tag,desktop}).then(_=>{
 		console.log("OKI")
 		event.emit("client://notification",{title:`version ${tag} has been installed`,data:`Have fun hitting those notes`})
 		return _
@@ -49,4 +49,7 @@ export function getLatestVulnusTag() {
 }
 export function getLatestLauncherTag() : Promise<string> {
 	return http.fetch<{tag_name:string}>("https://api.github.com/repos/pozm/vulnus-launcher/releases/latest").then(v=>v.data.tag_name,e=>e)
+}
+export function getPercent(total:number,current:number) {
+	return ((current/total)*100).toFixed(2) + "%"
 }

@@ -5,7 +5,11 @@ import { svelteSVG } from "rollup-plugin-svelte-svg";
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		svelte(),
+		svelte({
+			compilerOptions:{
+				// customElement:true
+			}
+		}),
 		svelteSVG({
 			// optional SVGO options
 			// pass empty object to enable defaults

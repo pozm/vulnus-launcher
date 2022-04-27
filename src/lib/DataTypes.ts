@@ -3,6 +3,12 @@ export interface IClientNotification {
 	data:string,
 	html?:boolean
 }
+export interface IInstallProgress {
+	total:number,
+	current:number,
+	state:string,
+	tag:string
+}
 
 export module GithubTagApi {
 

@@ -2,11 +2,12 @@
 	import { app, event, http, invoke } from "@tauri-apps/api";
 	import { Data } from "../store";
 	import gameplayGif from "../../assets/outputm.gif";
-	import { fly } from "svelte/transition";
-	import type { GithubTagApi } from "../DataTypes";
+	import { fade, fly } from "svelte/transition";
+	import type { GithubTagApi, IInstallProgress } from "../DataTypes";
 	import {
 		getLatestLauncherTag,
 		getLatestVulnusTag,
+		getPercent,
 		getTagDownload,
 		getTagFromRef,
 		installVersion,
@@ -16,6 +17,7 @@
 	} from "../SharedFunctions";
 	import { LatestVersionsAvailable, VersionsAvailable } from "../StoreData";
 	import binIco from '../../assets/svg/binico.svg';
+import { beforeUpdate, onDestroy, onMount } from "svelte";
 
 	// let gamePictures = ["https://ichef.bbci.co.uk/news/976/cpsprodpb/16620/production/_91408619_55df76d5-2245-41c1-8031-07a4da3f313f.jpg"]
 	// let showingPicture = 0;
@@ -37,7 +39,7 @@
 			showDropdown = false;
 		}
 	}
-
+	//#region store.load
 	event.once("client://store-loaded", () => {
 		console.log("store loaded../");
 		let lastUpdate = Number(
@@ -85,9 +87,35 @@
 			);
 		}
 	});
+	//#endregion
+
+	let installingVersion = false;
+	let installingText = "downloading"
+
+	let installingTotal = 0;
+	let installingProgress = 0;
+	$: installingPercent = getPercent(installingTotal, installingProgress);
+	onMount(()=>{
+		event.listen<IInstallProgress>("server://install-progress",evData=>{
+			console.log(evData)
+			if (evData.payload.state == "Done") {
+				installingText = "extracting"
+			} else if (evData.payload.state == "Start") {
+				installingText = "downloading"
+				installingProgress = evData.payload.current
+				installingTotal = evData.payload.total
+				installingVersion = true
+			} else {
+				installingProgress = evData.payload.current
+				installingTotal = evData.payload.total
+			}
+		})
+
+	})
 
 	function installVulnus() {
 		installVersion(chosenVersion,addToDesktop).then((_) => {
+			installingVersion = false
 			isVersionInstalled = versionInstalled(chosenVersion);
 		});
 	}
@@ -100,6 +128,7 @@
 		console.log("launch");
 		launchVulnus(chosenVersion);
 	}
+
 </script>
 
 <div class="flex w-full h-full flex-col">
@@ -129,6 +158,8 @@
 									class="bg-zinc-900 mb-2 p-2 rounded-xl border border-solid border-zinc-600 shadow-xl"
 								>
 									{#each $VersionsAvailable as version}
+										{@const isChosenVersion = version == chosenVersion}
+										{@debug isChosenVersion,chosenVersion}
 										<div>
 											<button
 												on:click={() => {
@@ -144,7 +175,7 @@
 													showDropdown = false;
 												}}
 												class={`appearance-none min-w-full block select-none ${
-													version == chosenVersion
+													isChosenVersion
 														? "text-gray-600"
 														: "text-gray-400"
 												}`}>{version}</button
@@ -201,7 +232,7 @@
 						<p class="text-gray-400">loading.../</p>
 					{:then installed}
 						{#if installed}
-							<div class="relative" >
+							<div in:fade class="relative" >
 
 								<div class="flex w-full flex-row space-x-3" >
 									
@@ -218,7 +249,7 @@
 								</div>
 							</div>
 						{:else}
-							<div class="my-3" >
+							<div in:fade class="my-3" >
 
 								<!-- install settings -->
 								<input bind:checked={addToDesktop} type="checkbox" id="dsktsc" class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-pink-600 text-pink-600 checked:ring-pink-600 focus:ring-pink-600 checked:border-pink-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer " />
@@ -228,11 +259,23 @@
 
 							</div>
 
-							<button
+							<button in:fade 
 								on:click={installVulnus}
 								class="py-2 w-full shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg"
 								>Install</button
 							>
+							{#if installingVersion}
+
+								<p for="downloading_vulnus" class="text-gray-400 select-none my-2" >
+									{installingText}{ installingText == "downloading" ? `: ${installingPercent}` : ""}
+								</p>
+								<div class="w-full h-2 bg-zinc-800 rounded-lg relative overflow-hidden" >
+									<div class="bg-pink-500 h-2 transition-all" style:width={installingPercent} >
+
+									</div>
+								</div>
+								<!-- <progress class="w-full rounded-lg" id="downloading_vulnus" value={installingProgress} max={installingTotal} /> -->
+							{/if}
 						{/if}
 					{/await}
 				</div>
