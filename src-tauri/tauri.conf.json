@@ -56,13 +56,17 @@
       "shell": {
         "all": false,
         "execute": false,
-        "open": "",
+        "open": ".*Vulnus.exe",
         "sidecar": false
       },
       "http": {
         "all": false,
         "request": false,
-        "scope": ["https://api.github.com/repos/beat-game-dev/*","https://github.com/beat-game-dev/Vulnus/releases/download/*"]
+        "scope": [
+			"https://api.github.com/repos/beat-game-dev/*",
+			"https://github.com/beat-game-dev/Vulnus/releases/download/*",
+			"https://api.github.com/repos/pozm/vulnus-launcher/releases/latest"
+		]
       }
     },
     "windows": [

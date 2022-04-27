@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { app, event, http, invoke } from "@tauri-apps/api";
-	import { Data } from "./store";
-	import gameplayGif from "../assets/outputm.gif";
+	import { Data } from "../store";
+	import gameplayGif from "../../assets/outputm.gif";
 	import { fly } from "svelte/transition";
-	import type { GithubTagApi } from "./DataTypes";
+	import type { GithubTagApi } from "../DataTypes";
 	import {
 		getLatestLauncherTag,
 		getLatestVulnusTag,
@@ -12,8 +12,8 @@
 		installVersion,
 		launchVulnus,
 		versionInstalled,
-	} from "./SharedFunctions";
-	import { LatestVersionsAvailable, VersionsAvailable } from "./StoreData";
+	} from "../SharedFunctions";
+	import { LatestVersionsAvailable, VersionsAvailable } from "../StoreData";
 
 	// let gamePictures = ["https://ichef.bbci.co.uk/news/976/cpsprodpb/16620/production/_91408619_55df76d5-2245-41c1-8031-07a4da3f313f.jpg"]
 	// let showingPicture = 0;
