@@ -27,6 +27,7 @@
     "vite": "^2.9.5"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.0",
     "@tauri-apps/api": "^1.0.0-rc.3"
   }
 }

@@ -1,4 +1,4 @@
- import { event, invoke } from "@tauri-apps/api";
+ import { event, http, invoke } from "@tauri-apps/api";
 import { ShowInstallModal, VulnusPath } from "./StoreData";
 import { get } from 'svelte/store';
 import { Data } from "./store";
@@ -11,9 +11,9 @@ export function getTagDownload(tag:string) {
 export function getTagFromRef(ref:string) {
 	return ref.split('/')[2]
 }
-export function installVersion(tag) {
+export function installVersion(tag,desktop=false) {
 	event.emit("client://notification",{title:`Please wait`,data:`Installing version ${tag} may take a few seconds or minutes depending on your connection.`})
-	return invoke('install_vulnus',{tag,desktop:true}).then(_=>{
+	return invoke('install_vulnus',{tag,desktop}).then(_=>{
 		console.log("OK")
 		event.emit("client://notification",{title:`version ${tag} has been installed`,data:`Have fun hitting those notes`})
 		return _
@@ -27,4 +27,11 @@ export function launchVulnus(tag:string) {
 		let installPath = `${dir}vulnus-launcher/${tag}`
 		shell.open(`${installPath}/Vulnus.exe`)
 	})
+}
+
+export function getLatestVulnusTag() {
+	return http.fetch<{tag_name:string}>("https://api.github.com/repos/beat-game-dev/Vulnus/releases/latest").then(v=>v.data.tag_name,e=>e)
+}
+export function getLatestLauncherTag() : Promise<string> {
+	return http.fetch<{tag_name:string}>("https://api.github.com/repos/pozm/vulnus-launcher/releases/latest").then(v=>v.data.tag_name,e=>e)
 }

@@ -5,7 +5,7 @@ import { dialog,fs,invoke } from "@tauri-apps/api";
 
 import IndexPage from "./lib/IndexPage.svelte";
 import { Data } from "./lib/store";
-import { ShowPathModal,ShowInstallModal, VulnusPath } from './lib/StoreData'
+import { ShowPathModal,ShowInstallModal, VulnusPath, VersionsAvailable, LatestVersionsAvailable } from './lib/StoreData'
 import {event} from '@tauri-apps/api'
 import NotificationHandler from './Components/NotificationHandler.svelte';
 import { onDestroy, onMount } from 'svelte';
@@ -13,14 +13,26 @@ import { onDestroy, onMount } from 'svelte';
 	let updatePath = "";
 	let PathActive = false;
 	let awaitingData = Data.Store.get.reload();
-	awaitingData.then(data=>{
-		updatePath = data["Vulnus.path"]
-		if ((data["Vulnus.path"] ?? '') == '') {
-			ShowPathModal.set(true)
-		} else {
-			VulnusPath.set(data["Vulnus.path"]);
-		}
+
+	onMount(()=>{
+		awaitingData.then(data=>{
+			updatePath = data["Vulnus.path"]
+			console.log("got data: ",data)
+			try{
+				LatestVersionsAvailable.set(data["Vulnus.versions.latest"])
+				VersionsAvailable.set(JSON.parse(data["Vulnus.versions"]))
+			} catch {
+				console.log("no versions")
+			}
+			if ((data["Vulnus.path"] ?? '') == '') {
+				ShowPathModal.set(true)
+			} else {
+				VulnusPath.set(data["Vulnus.path"]);
+			}
+			event.emit("client://store-loaded")
+		})
 	})
+
 	let PathIsInvalid = false;
 	let PagesMap = [IndexPage]
 	let ShowPage = 0;
