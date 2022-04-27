@@ -30,6 +30,13 @@ export function removeVersion(tag) {
 export function versionInstalled(tag:string): Promise<boolean> {
 	return invoke<boolean>('check_vulnus_tag',{tag})
 }
+
+export function launcherDir() {
+	return documentDir().then(dir=>{
+		return `${dir}vulnus-launcher`
+	},e=>e)
+}
+
 export function launchVulnus(tag:string) {
 	documentDir().then(dir=>{
 		let installPath = `${dir}vulnus-launcher/${tag}`

@@ -1,4 +1,18 @@
 <script lang="ts">
+import { Command } from "@tauri-apps/api/shell";
+
+import { launcherDir } from "../SharedFunctions";
+
+
+
+
+	async function openLauncherPath() {
+		let dir = await launcherDir();
+		console.log(dir)
+		new Command('ope',[dir]).spawn().then(ch=>{
+			// the h
+		});
+	}
 
 </script>
 
@@ -15,7 +29,7 @@
 			</div>
 		<div class="flex flex-row w-full content-center items-center" >
 			<p class="text-gray-300 text-xl mr-auto" >Open launcher folder</p>
-			<button class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-indigo-600 text-gray-100 bg-indigo-500 disabled:bg-indigo-600/50 mt-2 rounded-lg">Open</button>
+			<button on:click={openLauncherPath} class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-indigo-600 text-gray-100 bg-indigo-500 disabled:bg-indigo-600/50 mt-2 rounded-lg">Open</button>
 		</div>
 	</div>
 </div>

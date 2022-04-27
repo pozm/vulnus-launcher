@@ -55,9 +55,15 @@
       },
       "shell": {
         "all": false,
-        "execute": false,
-        "open": ".*Vulnus.exe",
-        "sidecar": false
+        "execute": true,
+        "open": "(.*Vulnus\\.exe|.*vulnus-launcher.*)",
+        "sidecar": false,
+		"scope": [{
+			"name": "ope",
+			"cmd": "explorer",
+			"args": [{"validator": ".*vulnus-launcher.*"}]
+
+		}]
       },
       "http": {
         "all": false,
