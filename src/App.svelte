@@ -22,20 +22,20 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 
 	onMount(()=>{
 		awaitingData.then(data=>{
-			updatePath = data["Vulnus.path"]
+			// updatePath = data["Vulnus.path"]
 			console.log("got data: ",data)
 			try{
-				LatestVersionsAvailable.set(data["Vulnus.versions.latest"])
-				ChosenVersion.set(data["Vulnus.versions.chosen"] ?? data["Vulnus.versions.latest"])
-				VersionsAvailable.set(JSON.parse(data["Vulnus.versions"]))
+				LatestVersionsAvailable.set(data.version.latest)
+				ChosenVersion.set(data.version.current ?? data.version.latest)
+				VersionsAvailable.set(data.version.versions)
 			} catch {
 				console.log("no versions")
 			}
-			if ((data["Vulnus.path"] ?? '') == '') {
-				ShowPathModal.set(true)
-			} else {
-				VulnusPath.set(data["Vulnus.path"]);
-			}
+			// if ((data["Vulnus.path"] ?? '') == '') {
+			// 	ShowPathModal.set(true)
+			// } else {
+			// 	VulnusPath.set(data["Vulnus.path"]);
+			// }
 			event.emit("client://store-loaded")
 		})
 	})

@@ -10,6 +10,20 @@ export interface IInstallProgress {
 	tag:string
 }
 
+export interface IDataStoreTypes {
+	version : IDataStoreVersion
+	launcher: IDataStoreLauncher
+}
+export interface IDataStoreLauncher {
+	latest : string
+}
+export interface IDataStoreVersion {
+	current : string,
+	latest : string,
+	versions : string[],
+	last_check : String
+}
+
 export module GithubTagApi {
 
     export interface Object {

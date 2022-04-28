@@ -40,38 +40,43 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 		}
 	}
 	//#region store.load
-	event.once("client://store-loaded", () => {
+	event.once("client://store-loaded", async () => {
 		console.log("store loaded../");
 		let lastUpdate = Number(
-			Data.Store.get.entries["Vulnus.versions.last_check"] ?? 0
+			new Date(Data.Store.get.data.version.last_check as string).getTime() ?? 0
 		);
 		if (lastUpdate < Date.now() - 1e3 * 60 * 15) {
-			http.fetch<GithubTagApi.RootObject[]>(
+			await http.fetch<GithubTagApi.RootObject[]>(
 				"https://api.github.com/repos/beat-game-dev/Vulnus/git/refs/tags"
 			).then((rdata) => {
 				// console.log("new err",rdata.data)
-				// console.log(versions,rdata)
+				// console.log(versions,rdata) //
 				VersionsAvailable.set(
 					rdata.data.map((v) => getTagFromRef(v.ref))
 				);
-				Data.Store.get.add(
-					"Vulnus.versions.last_check",
-					Date.now().toString()
-				);
-				Data.Store.get.add(
-					"Vulnus.versions",
-					JSON.stringify($VersionsAvailable)
-				);
+				Data.Store.get.data.version.last_check = new Date(Date.now()).toISOString();
+				Data.Store.get.data.version.versions = $VersionsAvailable
+				// Data.Store.get.add(
+				// 	"Vulnus.versions.last_check",
+				// 	Date.now().toString()
+				// );
+				// Data.Store.get.add(
+				// 	"Vulnus.versions",
+				// 	JSON.stringify($VersionsAvailable)
+				// );
 			});
-			getLatestVulnusTag().then((tag) => {
+			await getLatestVulnusTag().then((tag) => {
 				LatestVersionsAvailable.set(tag);
-				Data.Store.get.add("Vulnus.versions.latest", tag);
+				console.log("latest",tag)
+				// Data.Store.get.add("Vulnus.versions.latest", tag);
+				Data.Store.get.data.version.latest = tag
 				if (!$ChosenVersion) {
 					ChosenVersion.set(tag)
-					Data.Store.get.add("Vulnus.versions.chosen", tag);
+					Data.Store.get.data.version.current = tag
+					// Data.Store.get.add("Vulnus.versions.chosen", tag);
 				}
 			});
-			getLatestLauncherTag().then((tag) => {
+			await getLatestLauncherTag().then((tag) => {
 				app.getVersion().then((ver) => {
 					console.log("app ver", ver);
 					if (tag.includes(ver)) {
@@ -83,13 +88,15 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 						});
 					}
 				});
-				Data.Store.get.add("Launcher.versions.latest", tag);
+				Data.Store.get.data.launcher.latest = tag
+				// Data.Store.get.add("Launcher.versions.latest", tag);
 			});
 		} else {
 			console.log(
 				`not updating cuz last update too soon (${lastUpdate})`
 			);
 		}
+		Data.Store.get.write()
 	});
 	//#endregion
 
@@ -146,7 +153,10 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 	}
 	// save chosen version
 	$:{
-		Data.Store.get.add("Vulnus.versions.chosen", $ChosenVersion);
+		if (Data.Store.get.data) {
+			Data.Store.get.data.version.current = $ChosenVersion
+			Data.Store.get.write()
+		}
 	}
 </script>
 
