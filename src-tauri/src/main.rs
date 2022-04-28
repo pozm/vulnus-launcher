@@ -25,15 +25,15 @@ struct InstallProgressData {
 	total: u64,
 	current: u64,
 	state:InstallProgressState,
-	tag:String
+	identifier:String
 }
 impl InstallProgressData {
-	pub fn new(total:u64,tag:&str) -> Self {
+	pub fn new(total:u64,identifier:&str) -> Self {
 		Self {
 			total,
 			current:0,
 			state:InstallProgressState::Start,
-			tag:tag.to_string()
+			identifier:identifier.to_string()
 		}
 	}
 	pub fn update(&mut self,current:u64) {
@@ -73,6 +73,7 @@ fn get_vulnus_download(tag: &str) -> String {
         tag
     )
 }
+const BEPINEX_ZIP : &str = "https://cdn.discordapp.com/attachments/812076013285801985/969323588706517042/UnityIL2CPP_x64.zip";
 
 fn install_symlinks(tag: &str) {
     let launcher_dir = get_vulnus_dir(None);
@@ -102,6 +103,44 @@ fn install_symlinks(tag: &str) {
     symlink::symlink_dir(&launcher_maps, tag_dir.join("maps"));
 }
 
+async fn download_item<S, R:Runtime>(url:&str,identifier:S, window: &tauri::Window<R>) -> Result<Vec<u8>,String> where S : Into<String> {
+	let client = reqwest::Client::new();
+
+    let res = client.get(url)
+		.send()
+        .await
+        .or(Err(format!("Failed to GET from '{}'", &url)))?;
+    let total_size = res
+        .content_length()
+        .ok_or(format!("Failed to get content length from '{}'", &url))?;
+		
+	let mut file_data:Vec<u8> = vec![];
+	
+	let mut download_state = InstallProgressData::new(total_size,&identifier.into());
+	
+	window.emit("server://install-progress", &download_state);
+
+    let mut downloaded: u64 = 0;
+    let mut stream = res.bytes_stream();
+
+	download_state.downloading();
+
+    while let Some(item) = stream.next().await {
+        let chunk = item.or(Err(format!("Error while downloading file")))?;
+        let new = min(downloaded + (chunk.len() as u64), total_size);
+		file_data.extend(chunk);
+        downloaded = new;
+		download_state.update(downloaded);
+        window.emit("server://install-progress", &download_state);
+    }
+	download_state.done();
+	window.emit("server://install-progress", &download_state);
+
+	Ok(file_data)
+}
+
+
+
 #[tauri::command]
 async fn check_vulnus_tag(tag: String) -> bool {
     let path_to_vulnus = get_vulnus_dir(Some(&tag)).join("vulnus.exe");
@@ -116,7 +155,7 @@ async fn remove_vulnus(tag: String) -> bool {
 
 #[tauri::command(async)]
 async fn install_vulnus_progress<R: Runtime>(
-    app: tauri::AppHandle<R>,
+    _app: tauri::AppHandle<R>,
     window: tauri::Window<R>,
     tag: String,
     desktop: bool,
@@ -127,40 +166,11 @@ async fn install_vulnus_progress<R: Runtime>(
 
     // Reqwest setup
 
-	let client = reqwest::Client::new();
-
-    let res = client.get(&download_url)
-		.send()
-        .await
-        .or(Err(format!("Failed to GET from '{}'", &download_url)))?;
-    let total_size = res
-        .content_length()
-        .ok_or(format!("Failed to get content length from '{}'", &download_url))?;
-		
-	let mut zipFile:Vec<u8> = vec![];
-	
-	let mut download_state = InstallProgressData::new(total_size,&tag);
-	
-	window.emit("server://install-progress", &download_state);
-
-    let mut downloaded: u64 = 0;
-    let mut stream = res.bytes_stream();
-
-	download_state.downloading();
-
-    while let Some(item) = stream.next().await {
-        let chunk = item.or(Err(format!("Error while downloading file")))?;
-        let new = min(downloaded + (chunk.len() as u64), total_size);
-		zipFile.extend(chunk);
-        downloaded = new;
-		download_state.update(downloaded);
-        window.emit("server://install-progress", &download_state);
-    }
-	download_state.done();
-	window.emit("server://install-progress", &download_state);
     // pb.finish_with_message(&format!("Downloaded {} to {}", url, path));
 
-	let mut read = Cursor::new(zipFile);
+	let zip_file = download_item(&download_url, format!("TAG<{}>",tag), &window).await?;
+
+	let mut read = Cursor::new(zip_file);
     let mut zip = zip::ZipArchive::new(&mut read).unwrap();
     println!("extracting.");
     zip.extract(&vulnus_dir);

@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "vulnus-launcher"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "app to launch vulnus"
+authors = ["luna"]
 license = ""
-repository = ""
-default-run = "app"
+repository = "https://github.com/pozm/vulnus-launcher.git"
+default-run = "vulnus-launcher"
 edition = "2021"
 rust-version = "1.57"
 
@@ -26,6 +26,8 @@ futures-util = "0.3.21"
 reqwest = {version="0.11.10",features= ["stream"] }
 zip = "0.6.2"
 symlink="0.1.0"
+lazy_static="1.4"
+chrono = {verson= "0.4.19",features= ["serde"] }
 
 [features]
 # by default Tauri runs in production mode
