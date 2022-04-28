@@ -10,6 +10,7 @@ use tauri::api::path::{desktop_dir, document_dir};
 use tauri::{Runtime, ShellScope, ShellScopeError};
 use tokio::{fs::File, io::AsyncWriteExt};
 use futures_util::StreamExt;
+use vulnus_launcher::UserSettings::USER_SETTINGS;
 use std::cmp::min;
 
 use serde::{Deserialize, Serialize};
@@ -50,6 +51,10 @@ impl InstallProgressData {
 
 
 fn main() {
+
+	println!("attempting to save user settings");
+	USER_SETTINGS.read().unwrap().save().unwrap();
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             install_vulnus,

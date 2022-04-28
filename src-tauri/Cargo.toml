@@ -28,7 +28,7 @@ zip = "0.6.2"
 symlink="0.1.0"
 lazy_static="1.4"
 chrono = {verson= "0.4.19",features= ["serde"] }
-
+bincode = {version = "2.0.0-rc.1", features = ["serde"] }
 [features]
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
