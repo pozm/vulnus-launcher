@@ -50,7 +50,7 @@ import { Command } from "@tauri-apps/api/shell";
 	<p class="text-gray-400" >Vulnus launcher wouldn't be possible without the people behind it</p>
 	<ul class="text-gray-300 space-y-1 py-2 list-disc list-inside" >
 		{#each users as user}
-		<li><span class={`${user.color} cursor-pointer`} on:click={openGithub.bind(this,user.github)} >{user.name}</span>: {user.desc}</li>
+		<li><span class={`${user.color} hover:brightness-75 cursor-pointer`} on:click={openGithub.bind(this,user.github)} >{user.name}</span>: {user.desc}</li>
 
 		{/each}
 	</ul>
