@@ -28,3 +28,6 @@ while it is broken you can fix it by enabling developer mode within the windows 
 ![image](https://user-images.githubusercontent.com/44528100/165637876-33a99a96-1ccf-4238-90bc-21b5b72b0288.png)
 ![image](https://user-images.githubusercontent.com/44528100/165637908-ec56035e-da85-41e4-9f1c-5d317b807233.png)
 ![image](https://user-images.githubusercontent.com/44528100/165637949-77f386e0-c605-451c-957a-b10d0ff1f8af.png)
+
+## license
+this project is licensed under the `GNU GENERAL PUBLIC LICENSE` license.
