@@ -270,7 +270,7 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 									{installingText}{ installingText == "downloading" ? `: ${installingPercent}` : ""}
 								</p>
 								<div class="w-full h-2 bg-zinc-800 rounded-lg relative overflow-hidden" >
-									<div class="bg-pink-500 h-2 transition-all" style:width={installingPercent} >
+									<div class="bg-pink-500 h-2" style:width={installingPercent} >
 
 									</div>
 								</div>

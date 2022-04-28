@@ -60,11 +60,3 @@ import { AppNotifications } from "../lib/StoreData";
 	</div>
 </div>
 <slot/>
-
-<style scoped >
-
-	a {
-		color:rgb(249 168 212)
-	}
-
-</style>
