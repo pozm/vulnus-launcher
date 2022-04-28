@@ -30,6 +30,13 @@ import { Command } from "@tauri-apps/api/shell";
 			color : "text-indigo-300"
 
 		},
+		{
+			name: "TominoCZ",
+			desc:"Developer of Sound Space",
+			github : "TominoCZ",
+			color : "text-sky-300"
+
+		},
 	]
 
 </script>
