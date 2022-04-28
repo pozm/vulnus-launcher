@@ -61,7 +61,7 @@
 		"scope": [{
 			"name": "ope",
 			"cmd": "explorer",
-			"args": [{"validator": "(.*vulnus-launcher.*|https://github.com/[^/]+/?)"}]
+			"args": [{"validator": "(.*vulnus-launcher.*|https://github.com/[^/]+/?|.*\\.data\\\\.*)"}]
 
 		}]
       },

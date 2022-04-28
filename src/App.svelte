@@ -5,7 +5,7 @@ import { dialog,fs,invoke } from "@tauri-apps/api";
 
 import IndexPage from "./lib/pages/IndexPage.svelte";
 import { Data } from "./lib/store";
-import { ShowPathModal,ShowInstallModal, VulnusPath, VersionsAvailable, LatestVersionsAvailable } from './lib/StoreData'
+import { ShowPathModal,ShowInstallModal, VulnusPath, VersionsAvailable, LatestVersionsAvailable, ChosenVersion } from './lib/StoreData'
 import {event} from '@tauri-apps/api'
 import NotificationHandler from './Components/NotificationHandler.svelte';
 import { onDestroy, onMount } from 'svelte';
@@ -26,6 +26,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 			console.log("got data: ",data)
 			try{
 				LatestVersionsAvailable.set(data["Vulnus.versions.latest"])
+				ChosenVersion.set(data["Vulnus.versions.chosen"] ?? data["Vulnus.versions.latest"])
 				VersionsAvailable.set(JSON.parse(data["Vulnus.versions"]))
 			} catch {
 				console.log("no versions")

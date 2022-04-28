@@ -15,7 +15,7 @@
 		removeVersion,
 		versionInstalled,
 	} from "../SharedFunctions";
-	import { LatestVersionsAvailable, VersionsAvailable } from "../StoreData";
+	import { ChosenVersion, LatestVersionsAvailable, VersionsAvailable } from "../StoreData";
 	import binIco from '../../assets/svg/binico.svg';
 import { beforeUpdate, onDestroy, onMount } from "svelte";
 
@@ -23,12 +23,12 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 	// let showingPicture = 0;
 
 	let showDropdown = false;
-	let chosenVersion = "v0.0.2";
+	// let chosenVersion = "v0.0.2";
 	// let versions = $VersionsAvailable
 
 	let versionSelector: HTMLElement;
 	let addToDesktop = false
-	let isVersionInstalled = versionInstalled(chosenVersion);
+	$: isVersionInstalled = versionInstalled($ChosenVersion);
 	function onFocusHandle(
 		ev: MouseEvent & {
 			currentTarget: EventTarget & HTMLElement;
@@ -66,6 +66,10 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 			getLatestVulnusTag().then((tag) => {
 				LatestVersionsAvailable.set(tag);
 				Data.Store.get.add("Vulnus.versions.latest", tag);
+				if (!$ChosenVersion) {
+					ChosenVersion.set(tag)
+					Data.Store.get.add("Vulnus.versions.chosen", tag);
+				}
 			});
 			getLatestLauncherTag().then((tag) => {
 				app.getVersion().then((ver) => {
@@ -95,8 +99,12 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 	let installingTotal = 0;
 	let installingProgress = 0;
 	$: installingPercent = getPercent(installingTotal, installingProgress);
+
+
+	let UnlistenToProgress : ReturnType<typeof event.listen>;
 	onMount(()=>{
-		event.listen<IInstallProgress>("server://install-progress",evData=>{
+		// console.log("listen to progress")
+		UnlistenToProgress = event.listen<IInstallProgress>("server://install-progress",evData=>{
 			console.log(evData)
 			if (evData.payload.state == "Done") {
 				installingText = "extracting"
@@ -112,23 +120,34 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 		})
 
 	})
+	onDestroy(()=>{
+		UnlistenToProgress.then(fn=>{
+			fn()
+			// console.log("unlisten to progress")
+		})
+	})
 
 	function installVulnus() {
-		installVersion(chosenVersion,addToDesktop).then((_) => {
+		installVersion($ChosenVersion,addToDesktop).then((_) => {
 			installingVersion = false
-			isVersionInstalled = versionInstalled(chosenVersion);
+			// ChosenVersion.set($ChosenVersion)
+			isVersionInstalled = versionInstalled($ChosenVersion);
 		});
 	}
 	function uninstallVulnus() {
-		removeVersion(chosenVersion).then((_) => {
-			isVersionInstalled = versionInstalled(chosenVersion);
+		removeVersion($ChosenVersion).then((_) => {
+			// ChosenVersion.set($ChosenVersion)
+			isVersionInstalled = versionInstalled($ChosenVersion);
 		});
 	}
 	function runVulnus() {
 		console.log("launch");
-		launchVulnus(chosenVersion);
+		launchVulnus($ChosenVersion);
 	}
-
+	// save chosen version
+	$:{
+		Data.Store.get.add("Vulnus.versions.chosen", $ChosenVersion);
+	}
 </script>
 
 <div class="flex w-full h-full flex-col">
@@ -158,19 +177,20 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 									class="bg-zinc-900 mb-2 p-2 rounded-xl border border-solid border-zinc-600 shadow-xl"
 								>
 									{#each $VersionsAvailable as version}
-										{@const isChosenVersion = version == chosenVersion}
-										{@debug isChosenVersion,chosenVersion}
+										{@const isChosenVersion = version == $ChosenVersion}
+										<!-- {@debug isChosenVersion,chosenVersion} -->
 										<div>
 											<button
 												on:click={() => {
-													chosenVersion = version;
+													ChosenVersion.set(version)
+													// chosenVersion = version;
 													console.log(
 														"choose ",
 														version
 													);
 													isVersionInstalled =
 														versionInstalled(
-															chosenVersion
+															$ChosenVersion
 														);
 													showDropdown = false;
 												}}
@@ -186,21 +206,22 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 									<div>
 										<button
 											on:click={() => {
-												chosenVersion =
-													$LatestVersionsAvailable;
+												ChosenVersion.set($LatestVersionsAvailable)
+												// chosenVersion =
+												// 	$LatestVersionsAvailable;
 												console.log(
 													"choose ",
-													chosenVersion
+													$ChosenVersion
 												);
 												isVersionInstalled =
 													versionInstalled(
-														chosenVersion
+														$ChosenVersion
 													);
 												showDropdown = false;
 											}}
 											class={`appearance-none min-w-full block select-none ${
 												$LatestVersionsAvailable ==
-												chosenVersion
+												$ChosenVersion
 													? "text-gray-600"
 													: "text-gray-400"
 											}`}
@@ -219,7 +240,7 @@ import { beforeUpdate, onDestroy, onMount } from "svelte";
 									showDropdown = true;
 									// console.log("f",v)
 								}}
-								value={chosenVersion}
+								value={$ChosenVersion}
 								on:beforeinput|preventDefault
 								id="path"
 								name="path"
