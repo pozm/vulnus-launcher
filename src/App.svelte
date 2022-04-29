@@ -12,7 +12,9 @@ import { onDestroy, onMount } from 'svelte';
 import home_ico from './assets/svg/homeico.svg'
 import settings_ico from './assets/svg/settingsico.svg'
 import info_ico from './assets/svg/infoico.svg'
+import add_ico from './assets/svg/plusico.svg'
 import SettingsPage from './lib/pages/SettingsPage.svelte';
+import ModPage from './lib/pages/ModPage.svelte';
 import { fade, fly } from 'svelte/transition';
 import InfoPage from './lib/pages/InfoPage.svelte';
 
@@ -45,6 +47,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 	let PathIsInvalid = false;
 	let PagesMap = [
 		{c:IndexPage,s:home_ico,n:"Home"},
+		{c:ModPage,s:add_ico,n:"Modding"},
 		{c:InfoPage,s:info_ico,n:"Info"},
 		{c:SettingsPage,s:settings_ico,n:"Settings"},
 	]

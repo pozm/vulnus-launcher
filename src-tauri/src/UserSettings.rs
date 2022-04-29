@@ -15,19 +15,19 @@ lazy_static!{
 
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct UserSettings {
-	version:VersionSettings,
-	launcher:LauncherSettings
+	pub version:VersionSettings,
+	pub launcher:LauncherSettings
 }
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct LauncherSettings {
-	latest:String
+	pub latest:String
 }
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct VersionSettings {
-	current:String,
-	latest:String,
-	versions:Vec<String>,
-	last_check:DateTime<Utc>
+	pub current:String,
+	pub latest:String,
+	pub versions:Vec<String>,
+	pub last_check:DateTime<Utc>
 }
 
 const SAVE_TO_PATH: &str = "./vulnus-launcher/data.bin";

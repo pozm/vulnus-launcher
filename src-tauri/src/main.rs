@@ -59,6 +59,7 @@ fn main() {
             install_vulnus,
             check_vulnus_tag,
             remove_vulnus,
+			install_bepinex,
 			install_vulnus_progress,
 			DataHandler::get_data,
 			DataHandler::set_data
@@ -157,6 +158,22 @@ async fn check_vulnus_tag(tag: String) -> bool {
 async fn remove_vulnus(tag: String) -> bool {
     let path_to_vulnus = get_vulnus_dir(Some(&tag));
     fs::remove_dir_all(path_to_vulnus).is_ok()
+}
+#[tauri::command]
+async fn install_bepinex<R: Runtime>(
+    _app: tauri::AppHandle<R>,
+    window: tauri::Window<R>,
+) -> Result<(), String> {
+	let set = USER_SETTINGS.read().or(Err("unable to open settings"))?.clone();
+	let vulnus_dir = get_vulnus_dir(Some(&set.version.current));
+
+
+	let zip_file = download_item(BEPINEX_ZIP, format!("BEPINEX"), &window).await?;
+	let mut read = Cursor::new(zip_file);
+    let mut zip = zip::ZipArchive::new(&mut read).unwrap();
+    println!("extracting.");
+    zip.extract(&vulnus_dir);
+	Ok(())
 }
 
 #[tauri::command(async)]

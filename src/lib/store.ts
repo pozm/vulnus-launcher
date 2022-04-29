@@ -50,8 +50,8 @@ export namespace Data {
         //     await write(this.data);
         // }
         async write() {
-			if (this.lastWrite == this._data) return;
-			this.lastWrite = this._data;
+			if (this.lastWrite === this._data) return console.log("same",this._data,this.lastWrite);
+			this.lastWrite = {...this._data};
             await write(this._data);
         }
         async reload() {
