@@ -18,9 +18,9 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 
 	let updatePath = "";
 	let PathActive = false;
-	let awaitingData = Data.Store.get.reload();
-
+	let awaitingData : ReturnType<typeof Data.Store.get.reload>
 	onMount(()=>{
+		awaitingData = Data.Store.get.reload();
 		awaitingData.then(data=>{
 			// updatePath = data["Vulnus.path"]
 			console.log("got data: ",data)
@@ -31,6 +31,8 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 			} catch {
 				console.log("no versions")
 			}
+			//fg
+			//f
 			// if ((data["Vulnus.path"] ?? '') == '') {
 			// 	ShowPathModal.set(true)
 			// } else {
