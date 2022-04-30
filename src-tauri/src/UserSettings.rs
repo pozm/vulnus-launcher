@@ -1,11 +1,10 @@
 use bincode::de::read::Reader;
 use bincode::enc::write::Writer;
-use chrono::{DateTime, Utc, serde::{ts_seconds}};
+use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
 use serde::{Serialize, Deserialize};
-use tauri::api::path::data_dir;
+use tauri::api::path::{data_dir, document_dir};
 use std::fs::{File, create_dir_all};
-use std::ops::Index;
 use std::{sync::RwLock, path::PathBuf, fs::OpenOptions};
 use std::io::prelude::*;
 
@@ -15,15 +14,22 @@ lazy_static!{
 
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct UserSettings {
-	pub version:VersionSettings,
+	pub vulnus:VulnusSettingData,
 	pub launcher:LauncherSettings
 }
 #[derive(Debug, Serialize, Deserialize,Clone)]
+
+pub struct VulnusSettingData {
+	pub version : VulnusVersionSettings,
+	pub path : PathBuf
+}
+
+#[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct LauncherSettings {
-	pub latest:String
+	pub latest_version:String
 }
 #[derive(Debug, Serialize, Deserialize,Clone)]
-pub struct VersionSettings {
+pub struct VulnusVersionSettings {
 	pub current:String,
 	pub latest:String,
 	pub versions:Vec<String>,
@@ -52,26 +58,42 @@ impl Reader for FileWrapper {
 impl UserSettings{
 	pub fn new() -> Self {
 		Self{
-			version: VersionSettings{
-				current: "".to_string(),
-				latest: "".to_string(),
-				versions: vec![],
-				last_check: Utc::now() - chrono::Duration::days(1)
+			// version: VersionSettings{
+			// 	current: "".to_string(),
+			// 	latest: "".to_string(),
+			// 	versions: vec![],
+			// 	last_check: Utc::now() - chrono::Duration::days(1)
+			// },
+			// launcher: LauncherSettings{
+			// 	latest: "".to_string()
+			// }
+			vulnus: VulnusSettingData { 
+				version: VulnusVersionSettings{
+						current: "".to_string(),
+						latest: "".to_string(),
+						versions: vec![],
+						last_check: Utc::now() - chrono::Duration::days(1)
+					}, 
+				path: document_dir().expect("unable to get document directory")
 			},
 			launcher: LauncherSettings{
-				latest: "".to_string()
+				latest_version: "".to_string()
 			}
 		}
 	}
-	pub fn get_launcher_dir() -> Result<PathBuf,String> {
+	pub fn get_save_dir() -> Result<PathBuf,String> {
 
 		let data = data_dir().ok_or("Could not get data dir")?;
 	
 		Ok(data.join(SAVE_TO_PATH))
 	}
 
+	pub fn get_launcher_dir(&self) -> PathBuf {
+		self.vulnus.path.join("./vulnus-launcher/")
+	}
+
 	pub fn read() -> Result<Self,String> {
-		let data_path = Self::get_launcher_dir()?;
+		let data_path = Self::get_save_dir()?;
 
 		create_dir_all(data_path.parent().unwrap()).or(Err("Could not create launcher dir".to_string()))?;
 
@@ -90,7 +112,7 @@ impl UserSettings{
 
 	pub fn save(&self) -> Result<(),String> {
 		
-		let data_path = Self::get_launcher_dir()?;
+		let data_path = Self::get_save_dir()?;
 
 		create_dir_all(data_path.parent().unwrap()).or(Err("Could not create launcher dir".to_string()))?;
 

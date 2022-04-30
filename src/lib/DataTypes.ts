@@ -11,13 +11,18 @@ export interface IInstallProgress {
 }
 
 export interface IDataStoreTypes {
-	version : IDataStoreVersion
+	vulnus : IDataStoreVulnus
 	launcher: IDataStoreLauncher
 }
-export interface IDataStoreLauncher {
-	latest : string
+
+export interface IDataStoreVulnus {
+	version : IDataStoreVulnusVersion
 }
-export interface IDataStoreVersion {
+
+export interface IDataStoreLauncher {
+	latest_version : string
+}
+export interface IDataStoreVulnusVersion {
 	current : string,
 	latest : string,
 	versions : string[],

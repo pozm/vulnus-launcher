@@ -27,9 +27,9 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 			// updatePath = data["Vulnus.path"]
 			console.log("got data: ",data)
 			try{
-				LatestVersionsAvailable.set(data.version.latest)
-				ChosenVersion.set(data.version.current ?? data.version.latest)
-				VersionsAvailable.set(data.version.versions)
+				LatestVersionsAvailable.set(data.vulnus.version.latest)
+				ChosenVersion.set(data.vulnus.version.current ?? data.vulnus.version.latest)
+				VersionsAvailable.set(data.vulnus.version.versions)
 			} catch {
 				console.log("no versions")
 			}
