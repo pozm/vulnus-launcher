@@ -2,26 +2,32 @@
 import { appDir } from "@tauri-apps/api/path";
 
 import { Command } from "@tauri-apps/api/shell";
+import { onMount } from "svelte";
 
-import { launcherDir } from "../SharedFunctions";
+import { getDataDir, launcherDir } from "../SharedFunctions";
+import { Data } from "../store";
+import { VulnusPath } from "../StoreData";
 
 
 
 
 	async function openLauncherPath() {
-		let dir = await launcherDir();
+		let dir = `${await launcherDir()}\\`;
 		console.log(dir)
 		new Command('ope',[dir]).spawn().then(ch=>{
 			// the h
 		});
 	}
 	async function openDataPath() {
-		let data_dir = `${await appDir()}.data\\pog\\`
+		let data_dir = `${await getDataDir()}\\`
 		console.log(data_dir)
 		new Command('ope',[data_dir]).spawn().then(ch=>{
 			// the h
 		});
 	}
+	onMount(async()=>{
+		VulnusPath.set(await launcherDir());
+	})
 
 </script>
 
@@ -33,7 +39,7 @@ import { launcherDir } from "../SharedFunctions";
 		<div class="my-4 bg-neutral-900 p-2 border border-solid border-neutral-700 rounded-xl shadow-lg z-30" >
 			
 			<div class="flex flex-row w-full content-center items-center" >
-				<p class="text-gray-300 text-xl mr-auto" >Vulnus Path: <span class="text-pink-300" >lol</span></p>
+				<p class="text-gray-300 text-xl mr-auto" >Vulnus Path: <span class="text-pink-300" >{$VulnusPath}</span></p>
 				<button  class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-cyan-600 text-gray-100 bg-cyan-500 disabled:bg-cyan-600/50 mt-2 rounded-lg">Change</button>
 			</div>
 		<div class="flex flex-row w-full content-center items-center" >

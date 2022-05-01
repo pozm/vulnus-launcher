@@ -36,6 +36,14 @@ import { getPercent } from "../SharedFunctions";
 		UnlistenToProgress.then(e=>e());
 	})
 
+	let bepinexInstalled = isInstalled();
+
+	function isInstalled() {
+		return invoke("check_bepinex").then(r=>{
+			return r
+		},_=>false)
+	}
+
 	function installBepinex() {
 		invoke("install_bepinex").then(()=>{
 			installingVersion = false
@@ -48,22 +56,30 @@ import { getPercent } from "../SharedFunctions";
 <h1 class="text-gray-200 text-5xl mb-4" >Modding</h1>
 <div class="relative" >
 
-	<button in:fade 
-	on:click={installBepinex}
-	class="py-2 w-full shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg"
-	>Install</button
-	>
-	{#if installingVersion}
+	{#await bepinexInstalled then bInstalled}
+	<!-- {@debug bInstalled} -->
+		{#if bInstalled}
+			<p>pog</p>
+		{:else}
+			<button in:fade 
+			on:click={installBepinex}
+			class="py-2 w-full shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg"
+			>Install</button
+			>
+			{#if installingVersion}
+		
+				<p for="downloading_vulnus" class="text-gray-400 select-none my-2" >
+					{installingText}{ installingText == "downloading" ? `: ${installingPercent}` : ""}
+				</p>
+				<div class="w-full h-2 bg-zinc-800 rounded-lg relative overflow-hidden" >
+					<div class="bg-pink-500 h-2" style:width={installingPercent} >
+		
+					</div>
+				</div>
+				<!-- <progress class="w-full rounded-lg" id="downloading_vulnus" value={installingProgress} max={installingTotal} /> -->
+			{/if}
+		{/if}
+	{/await}
 
-		<p for="downloading_vulnus" class="text-gray-400 select-none my-2" >
-			{installingText}{ installingText == "downloading" ? `: ${installingPercent}` : ""}
-		</p>
-		<div class="w-full h-2 bg-zinc-800 rounded-lg relative overflow-hidden" >
-			<div class="bg-pink-500 h-2" style:width={installingPercent} >
-
-			</div>
-		</div>
-		<!-- <progress class="w-full rounded-lg" id="downloading_vulnus" value={installingProgress} max={installingTotal} /> -->
-	{/if}
 
 </div>

@@ -53,21 +53,25 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 	]
 	let ShowPage = 0;
 
-	let interval;
-
-
+	
+	
 	let SidebarHovering = false;
-
+	
 	// onMount(()=>{
 	// 	let bbb = 0;
-	// 	interval = setInterval(()=>{
-	// 		event.emit("client://notification",{title:"bruh",data:`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapog${bbb++}`})
-
-	// 	},2e3)
+	// 	event.emit("client://notification",{
+	// 		title:"bruh",
+	// 		data:`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapog${bbb++}`,
+	// 		err:true
+	// 	})
+	// 	// interval = setInterval(()=>{
+			
+	// 	// },2e3)
 	// })
-
+	// let interval;
+	
 	// onDestroy(()=>{
-	// 	clearInterval(interval)
+	// 	// clearInterval(interval)
 	// })
 
 </script>

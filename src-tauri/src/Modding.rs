@@ -20,3 +20,9 @@ pub async fn install_bepinex<R: Runtime>(
     zip.extract(&vulnus_dir);
 	Ok(())
 }
+#[tauri::command]
+pub async fn check_bepinex() -> Result<bool,String> {
+	let set = USER_SETTINGS.read().or(Err("unable to open settings"))?.clone();
+	let vulnus_dir = get_vulnus_dir(Some(&set.vulnus.version.current));
+	Ok(vulnus_dir.join("winhttp.dll").exists() && vulnus_dir.join("BepInEx").exists())
+}

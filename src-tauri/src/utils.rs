@@ -45,8 +45,9 @@ pub fn get_vulnus_dir(tag: Option<&str>) -> PathBuf {
 }
 pub fn get_vulnus_download(tag: &str) -> String {
     format!(
-        "https://github.com/beat-game-dev/Vulnus/releases/download/{}/Vulnus_Beta_Win.zip",
-        tag
+        "https://github.com/beat-game-dev/Vulnus/releases/download/{}/Vulnus_Beta_{}.zip",
+        tag,
+		if cfg!(macos) {"Mac"} else {"Win"}
     )
 }
 pub const BEPINEX_ZIP : &str = "https://cdn.discordapp.com/attachments/812076013285801985/969323588706517042/UnityIL2CPP_x64.zip";

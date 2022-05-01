@@ -1,4 +1,4 @@
- import { event, http, invoke } from "@tauri-apps/api";
+ import { event, http, invoke, path } from "@tauri-apps/api";
 import { ShowInstallModal, VulnusPath } from "./StoreData";
 import { get } from 'svelte/store';
 import { Data } from "./store";
@@ -32,9 +32,7 @@ export function versionInstalled(tag:string): Promise<boolean> {
 }
 
 export function launcherDir() {
-	return documentDir().then(dir=>{
-		return `${dir}vulnus-launcher`
-	},e=>e)
+	return path.join(Data.Store.get.data.vulnus.path,"vulnus-launcher")
 }
 
 export function launchVulnus(tag:string) {
@@ -42,6 +40,9 @@ export function launchVulnus(tag:string) {
 		let installPath = `${dir}vulnus-launcher/${tag}`
 		shell.open(`${installPath}/Vulnus.exe`)
 	})
+}
+export function getDataDir() : Promise<string> {
+	return invoke("get_save_path")
 }
 
 export function getLatestVulnusTag() {

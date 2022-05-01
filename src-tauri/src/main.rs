@@ -20,12 +20,13 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            install_vulnus,
             check_vulnus_tag,
             remove_vulnus,
-            install_vulnus_progress,
+            install_vulnus_progress, 
             Modding::install_bepinex,
+            Modding::check_bepinex,
             DataHandler::get_data,
+            DataHandler::get_save_path,
             DataHandler::set_data
         ])
         .run(tauri::generate_context!())
@@ -56,9 +57,7 @@ async fn install_vulnus_progress<R: Runtime>(
     let download_url = get_vulnus_download(&tag);
     let vulnus_dir = get_vulnus_dir(Some(&tag));
 
-    // Reqwest setup
-    //
-    // pb.finish_with_message(&format!("Downloaded {} to {}", url, path));
+	println!("install to {:?}", vulnus_dir);
 
     let zip_file = download_item(&download_url, format!("TAG<{}>", tag), &window).await?;
 
@@ -81,44 +80,4 @@ async fn install_vulnus_progress<R: Runtime>(
     }
 
     return Ok(());
-}
-
-#[tauri::command]
-async fn install_vulnus(tag: String, desktop: bool) -> bool {
-    let vulnus_dir = get_vulnus_dir(Some(&tag));
-
-    // println!("install: {}\nremote:{}", &vulnus_dir,&url);
-
-    let path_to_vulnus = Path::new(&vulnus_dir);
-
-    tokio::fs::create_dir_all(&path_to_vulnus).await.unwrap();
-
-    let download_url = get_vulnus_download(&tag);
-
-    let bytes = reqwest::get(&download_url)
-        .await
-        .unwrap()
-        .bytes()
-        .await
-        .unwrap();
-    let mut read = Cursor::new(bytes.to_vec());
-    let mut zip = zip::ZipArchive::new(&mut read).unwrap();
-    println!("extracting.");
-    zip.extract(&path_to_vulnus);
-
-    println!("installing symlinks.");
-
-    install_symlinks(&tag);
-
-    if desktop {
-        println!("make desktop shortcut.");
-        let vulnus_exe = path_to_vulnus.join("vulnus.exe");
-        let vulnus_desktop = desktop_dir().unwrap().join(format!("vulnus_{}.exe", &tag));
-        if !vulnus_desktop.exists() {
-            symlink::symlink_file(vulnus_exe, &vulnus_desktop).unwrap();
-        }
-    }
-
-    println!("done!!");
-    return true;
 }

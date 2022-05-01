@@ -2,6 +2,7 @@ export interface IClientNotification {
 	title:string
 	data:string,
 	html?:boolean
+	err?:boolean
 }
 export interface IInstallProgress {
 	total:number,
@@ -16,7 +17,8 @@ export interface IDataStoreTypes {
 }
 
 export interface IDataStoreVulnus {
-	version : IDataStoreVulnusVersion
+	version : IDataStoreVulnusVersion,
+	path:string
 }
 
 export interface IDataStoreLauncher {
