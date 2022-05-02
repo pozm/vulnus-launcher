@@ -2,10 +2,13 @@
 import { event, invoke } from "@tauri-apps/api";
 
 import { onDestroy, onMount } from "svelte";
+import { each } from "svelte/internal";
+import { get, writable } from "svelte/store";
 import { fade } from "svelte/transition";
 import type { IInstallProgress } from "../DataTypes";
 import { getPercent } from "../SharedFunctions";
-
+import { Data } from "../store";
+import { formatRelative } from 'date-fns'
 	let UnlistenToProgress : ReturnType<typeof event.listen>;
 		let installingVersion = false;
 	let installingText = "downloading"
@@ -48,8 +51,18 @@ import { getPercent } from "../SharedFunctions";
 		invoke("install_bepinex").then(()=>{
 			installingVersion = false
 		})
+	}	
+
+	function getRelativeDate(date) {
+		return formatRelative(new Date(date), new Date())
 	}
 
+	function installMod(idx) {
+		invoke("install_mod",{idx}).then(()=>Data.Store.get.reload(),console.error)
+	}
+
+	// let mods = writable([])
+	$: mods = Data.Store.get.data.modding.mods
 </script>
 
 
@@ -59,7 +72,27 @@ import { getPercent } from "../SharedFunctions";
 	{#await bepinexInstalled then bInstalled}
 	<!-- {@debug bInstalled} -->
 		{#if bInstalled}
-			<p>pog</p>
+			<div class="grid w-full grid-cols-3" >
+				{#each mods as mod,i}
+					
+					<div class="w-full h-52 bg-zinc-800 rounded-xl p-4 border border-solid border-zinc-600 shadow-lg text-neutral-400 flex flex-col" >
+						<h3 class="text-xl" >{mod.name}</h3>
+						<div class="w-full flex flex-col" >
+							<ol>
+								<li>
+									Last updated: <span class="text-pink-300" > {getRelativeDate(mod.last_updated)} </span>
+								</li>
+								<li>
+									Vulnus versions supported : <span class="text-pink-300" > {mod.available_versions.join(", ")} </span>
+								</li>
+							</ol>
+						</div>
+						<div class=" mt-auto w-full flex flex-row  justify-end" >
+							<button disabled={mod?.installed ?? false}  on:click={installMod.bind(this,i)} class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg">{mod?.installed ? "Installed" : "Install"}</button>
+						</div>
+					</div>
+				{/each}
+			</div>
 		{:else}
 			<button in:fade 
 			on:click={installBepinex}

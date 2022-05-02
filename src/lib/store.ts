@@ -64,8 +64,11 @@ export namespace Data {
     }
 
     function read() {
-		console.log("READ")
-        return invoke<IDataStoreTypes>("get_data")
+		return invoke<IDataStoreTypes>("get_data").then(data=>{
+			console.log("READ",data)
+			
+			return data;
+		},e=>e)
     }
     function write(data: IDataStoreTypes) {
 		console.log("WRITE",data)

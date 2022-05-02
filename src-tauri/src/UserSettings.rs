@@ -3,10 +3,13 @@ use bincode::enc::write::Writer;
 use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
 use serde::{Serialize, Deserialize};
+use tauri::Runtime;
 use tauri::api::path::{data_dir, local_data_dir};
 use std::fs::{File, create_dir_all, self};
 use std::{sync::RwLock, path::PathBuf, fs::OpenOptions};
 use std::io::prelude::*;
+
+use crate::utils::{get_vulnus_dir, download_item};
 
 lazy_static!{
 	pub static ref USER_SETTINGS: RwLock<UserSettings> = RwLock::new(UserSettings::read().unwrap());
@@ -36,7 +39,8 @@ pub struct ModData {
 	pub available_versions:Vec<String>,
 	pub current_version:String,
 	pub last_updated:DateTime<Utc>,
-	pub download_url:String
+	pub download_url:String,
+	pub installed:Option<bool>,
 }
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct ModdingData {
@@ -53,6 +57,19 @@ pub struct VulnusVersionSettings {
 
 const SAVE_TO_PATH: &str = "vulnus-launcher/data.bin";
 
+
+impl ModData {
+	pub async fn install<R:Runtime>(&mut self, window: &tauri::Window<R>) -> Result<(), String> {
+		let set = USER_SETTINGS.read().or(Err("unable to open settings"))?.clone();
+		let vulnus_dir = get_vulnus_dir(Some(&set.vulnus.version.current));
+		let dll_file = download_item(&self.download_url, format!("MOD<{}>",self.name), window).await?;
+		println!("writing mod.");
+		OpenOptions::new().write(true).truncate(true).create(true)
+			.open(vulnus_dir.join("BepInEx/plugins/").join(&self.name)).or(Err("unable to open mod dll"))?
+				.write_all(&dll_file).or(Err("Unable to write dll"))?;
+		Ok(())
+	}
+}
 
 struct FileWrapper(File);
 

@@ -14,6 +14,18 @@ export interface IInstallProgress {
 export interface IDataStoreTypes {
 	vulnus : IDataStoreVulnus
 	launcher: IDataStoreLauncher
+	modding : IDataStoreModding
+}
+export interface IDataStoreModding {
+	mods : IModData[]
+}
+export interface IModData {
+	available_versions:string[],
+	current_version:string,
+	name:string,
+	download_url:string,
+	last_updated:string,
+	installed?:boolean,
 }
 
 export interface IDataStoreVulnus {

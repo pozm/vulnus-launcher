@@ -21,7 +21,10 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 	let updatePath = "";
 	let PathActive = false;
 	let awaitingData : ReturnType<typeof Data.Store.get.reload>
-	onMount(()=>{
+	onMount(async ()=>{
+
+		await invoke("fetch_mods")
+
 		awaitingData = Data.Store.get.reload();
 		awaitingData.then(data=>{
 			// updatePath = data["Vulnus.path"]

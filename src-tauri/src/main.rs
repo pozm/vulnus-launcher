@@ -11,13 +11,12 @@ use tauri::Runtime;
 use vulnus_launcher::{
 	utils::{download_item, get_vulnus_dir, install_symlinks, get_vulnus_download},
 	UserSettings::USER_SETTINGS,
-	Modding,
+	Modding::{self, update_mods},
 	DataHandler
 };
 
 fn main() {
     USER_SETTINGS.read().unwrap().save().unwrap();
-
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             check_vulnus_tag,
@@ -25,6 +24,8 @@ fn main() {
             install_vulnus_progress, 
             Modding::install_bepinex,
             Modding::check_bepinex,
+            Modding::fetch_mods,
+            Modding::install_mod,
             DataHandler::get_data,
             DataHandler::get_save_path,
             DataHandler::set_data
