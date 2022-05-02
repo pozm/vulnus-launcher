@@ -50,6 +50,7 @@ import { formatRelative } from 'date-fns'
 	function installBepinex() {
 		invoke("install_bepinex").then(()=>{
 			installingVersion = false
+			bepinexInstalled = isInstalled()
 		})
 	}	
 
@@ -58,7 +59,11 @@ import { formatRelative } from 'date-fns'
 	}
 
 	function installMod(idx) {
-		invoke("install_mod",{idx}).then(()=>Data.Store.get.reload(),console.error)
+		invoke("install_mod",{idx}).then(()=>{
+			Data.Store.get.reload().then(_=>{
+				mods = Data.Store.get.data.modding.mods
+			})
+		},console.error)
 	}
 
 	// let mods = writable([])

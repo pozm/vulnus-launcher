@@ -98,7 +98,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 	// 	event.emit("client://notification",{
 	// 		title:"bruh",
 	// 		data:`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapog${bbb++}`,
-	// 		err:true
+	// 		err:false
 	// 	})
 	// 	// interval = setInterval(()=>{
 			
