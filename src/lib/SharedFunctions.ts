@@ -36,8 +36,8 @@ export function launcherDir() {
 }
 
 export function launchVulnus(tag:string) {
-	documentDir().then(dir=>{
-		let installPath = `${dir}vulnus-launcher/${tag}`
+	launcherDir().then(dir=>{
+		let installPath = `${dir}/${tag}`
 		shell.open(`${installPath}/Vulnus.exe`)
 	})
 }
