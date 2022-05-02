@@ -28,7 +28,9 @@ fn main() {
             Modding::install_mod,
             DataHandler::get_data,
             DataHandler::get_save_path,
-            DataHandler::set_data
+            DataHandler::set_path,
+            DataHandler::set_data,
+            DataHandler::dir_exist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

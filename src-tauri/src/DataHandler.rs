@@ -41,3 +41,7 @@ pub async fn get_save_path() -> Result<PathBuf, String> {
 	let parent = save_to.parent().ok_or("unable to get parent of save dir")?;
     Ok(parent.to_path_buf())
 }
+#[tauri::command]
+pub async fn dir_exist<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>,dir:PathBuf) -> bool {
+  dir.exists()
+}
