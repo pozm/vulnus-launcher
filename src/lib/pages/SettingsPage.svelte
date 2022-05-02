@@ -6,7 +6,7 @@ import { onMount } from "svelte";
 
 import { getDataDir, launcherDir } from "../SharedFunctions";
 import { Data } from "../store";
-import { VulnusPath } from "../StoreData";
+import { ShowPathModal, VulnusPath } from "../StoreData";
 
 
 
@@ -40,7 +40,7 @@ import { VulnusPath } from "../StoreData";
 			
 			<div class="flex flex-row w-full content-center items-center" >
 				<p class="text-gray-300 text-xl mr-auto" >Vulnus Path: <span class="text-pink-300" >{$VulnusPath}</span></p>
-				<button  class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-cyan-600 text-gray-100 bg-cyan-500 disabled:bg-cyan-600/50 mt-2 rounded-lg">Change</button>
+				<button on:click={()=>{ShowPathModal.set(true)}}  class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-cyan-600 text-gray-100 bg-cyan-500 disabled:bg-cyan-600/50 mt-2 rounded-lg">Change</button>
 			</div>
 		<div class="flex flex-row w-full content-center items-center" >
 			<p class="text-gray-300 text-xl mr-auto" >Open launcher folder</p>
