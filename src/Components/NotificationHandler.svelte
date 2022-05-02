@@ -38,6 +38,7 @@ import xcircle from '../assets/svg/xcirico.svg'
 	})
 	// let notifiArr: IClientNotification[]=[]
 	// $: revNoti = [...$AppNotifications].reverse();
+	let usables = ["col-span-7","col-span-8"] // this makes tailwind actually generate the css.
 </script>
 <!-- {@debug notifications} -->
 <div class="absolute h-full w-72 py-2 right-2 z-60" >
