@@ -20,7 +20,7 @@ while it is broken you can fix it by enabling developer mode within the windows 
 ## planned features
 - [ ] move install directory
 - [ ] allow to set maps directory to another using symlinks
-- [ ] built in mod support
+- [x] built in mod support
 - [ ] (potentially) map download/install support
 
 ## screenshots
