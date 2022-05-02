@@ -113,7 +113,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 </script>
 <div class="flex min-h-screen" >
 	<NotificationHandler/>
-	<Modal show={$ShowPathModal}>
+	<Modal show={$ShowPathModal} >
 		<h1 class="text-gray-200 text-2xl" >Hi,</h1>
 		<h3 class="text-gray-300 text-lg">To change the location of the <span class="text-pink-300" >Vulnus Launcher</span> please enter a directory</h3>
 		<div class="relative">
@@ -134,7 +134,10 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 				<p class="mr-auto mt-2 text-sm text-red-400 select-none " >The path you have provided is is invalid </p>
 				
 			{/if}
-			<button disabled={PathIsInvalid} class="py-2 shadow-sm px-12 transition-colors hover:bg-green-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg" on:click="{SetVulnusPath}">Save</button>
+			<div>
+				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-red-600 text-gray-100 bg-red-500 disabled:bg-red-600/50 mt-2 rounded-lg" on:click="{()=>{ShowPathModal.set(false)}}">Close</button>
+				<button disabled={PathIsInvalid} class="py-2 shadow-sm px-8 transition-colors hover:bg-green-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg" on:click="{SetVulnusPath}">Save</button>
+			</div>
 		</div>
 	</Modal>
 	<div class="min-h-screen select-none w-14 bg-zinc-800 flex flex-col space-y-2 py-2 hover:w-32 transition-all duration-200 items-center hover:items-start px-1" on:mouseleave={()=>SidebarHovering=false} on:mouseenter={()=>SidebarHovering=true} >
