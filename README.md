@@ -10,6 +10,9 @@ to install a version just select which version you want and hit install, once it
 ## extra functionality
 Settings and maps should be able to sync across versions using symlinks.
 
+Macos is now supported using patches to the executable to make it work without you having to do anything.
+> modding isn't supported at the moment but may be in the future.
+
 ### notes
 In windows symlinks are only allowed to be created by administrators by default. 
 
@@ -18,7 +21,7 @@ This will be fixed in a future commit.
 while it is broken you can fix it by enabling developer mode within the windows settings.
 
 ## planned features
-- [ ] move install directory
+- [x] move install directory
 - [ ] allow to set maps directory to another using symlinks
 - [x] built in mod support
 - [ ] (potentially) map download/install support
