@@ -58,6 +58,16 @@ pub fn get_vulnus_download(tag: &str) -> String {
 }
 pub const BEPINEX_ZIP : &str = "https://cdn.discordapp.com/attachments/812076013285801985/969323588706517042/UnityIL2CPP_x64.zip";
 
+#[cfg(target_os="macos")]
+pub fn set_as_safe<S>(p:S) -> Result<(),String> where S: Into<PathBuf> {
+    use std::process::Command;
+
+	let path : PathBuf = p.into();
+	let xattr_output = Command::new("xattr")
+		.arg("-r").arg("-d").arg("com.apple.quarantine").arg(&path).output();
+	println!("xtr: {:?}",xattr_output);
+	Ok(())
+}
 pub fn install_symlinks(tag: &str) {
     let launcher_dir = get_vulnus_dir(None);
     let tag_dir = get_vulnus_dir(Some(tag));

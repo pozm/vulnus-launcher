@@ -4,7 +4,7 @@ import { get } from 'svelte/store';
 import { Data } from "./store";
 import { documentDir } from "@tauri-apps/api/path";
 import { emit } from "@tauri-apps/api/event";
-import {shell} from '@tauri-apps/api'
+import {shell, os} from '@tauri-apps/api'
 export function getTagDownload(tag:string) {
 	return `https://github.com/beat-game-dev/Vulnus/releases/download/${tag}/Vulnus_Beta_Win.zip`
 }
@@ -36,9 +36,13 @@ export function launcherDir() {
 }
 
 export function launchVulnus(tag:string) {
-	launcherDir().then(dir=>{
+	launcherDir().then(async dir=>{
 		let installPath = `${dir}/${tag}`
-		shell.open(`${installPath}/Vulnus.exe`)
+		let ext = "exe";
+		switch (await os.platform()) {
+			case "darwin": {ext="app"} break;
+		}
+		shell.open(`${installPath}/Vulnus.${ext}`)
 	})
 }
 export function getDataDir() : Promise<string> {
