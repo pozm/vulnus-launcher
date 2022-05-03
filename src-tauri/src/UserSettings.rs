@@ -65,7 +65,7 @@ impl ModData {
 		let dll_file = download_item(&self.download_url, format!("MOD<{}>",self.name), window).await?;
 		println!("writing mod.");
 		OpenOptions::new().write(true).truncate(true).create(true)
-			.open(vulnus_dir.join("BepInEx/plugins/").join(&self.name)).or(Err("unable to open mod dll"))?
+			.open(vulnus_dir.join("BepInEx/plugins/").join(format!("{}.dll",&self.name))).or(Err("unable to open mod dll"))?
 				.write_all(&dll_file).or(Err("Unable to write dll"))?;
 		Ok(())
 	}
