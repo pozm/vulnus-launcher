@@ -44,14 +44,30 @@ pub fn get_vulnus_dir(tag: Option<&str>) -> PathBuf {
         .join(tag.unwrap_or(""))
 }
 pub fn get_vulnus_download(tag: &str) -> String {
+	#[cfg(target_os="windows")]
+	let platform = "Win";
+	#[cfg(target_os="linux")]
+	let platform = "Linux";
+	#[cfg(target_os="macos")]
+	let platform = "Mac";
     format!(
         "https://github.com/beat-game-dev/Vulnus/releases/download/{}/Vulnus_Beta_{}.zip",
         tag,
-		if cfg!(macos) {"Mac"} else {"Win"}
+		platform
     )
 }
 pub const BEPINEX_ZIP : &str = "https://cdn.discordapp.com/attachments/812076013285801985/969323588706517042/UnityIL2CPP_x64.zip";
 
+#[cfg(target_os="macos")]
+pub fn set_as_safe<S>(p:S) -> Result<(),String> where S: Into<PathBuf> {
+    use std::process::Command;
+
+	let path : PathBuf = p.into();
+	let xattr_output = Command::new("xattr")
+		.arg("-r").arg("-d").arg("com.apple.quarantine").arg(&path).output();
+	println!("xtr: {:?}",xattr_output);
+	Ok(())
+}
 pub fn install_symlinks(tag: &str) {
     let launcher_dir = get_vulnus_dir(None);
     let tag_dir = get_vulnus_dir(Some(tag));
@@ -67,7 +83,7 @@ pub fn install_symlinks(tag: &str) {
             .expect("failed to create launcher game settings directory");
         let mut f = fs::File::create(&launcher_settings)
             .expect("failed to create launcher game settings file");
-        let game_settings: &[u8] = include_bytes!("../default_game_settings.json");
+        let game_settings: &[u8] = include_bytes!("../../assets/default_game_settings.json");
         f.write_all(&game_settings)
             .expect("failed to write default game settings file");
     }

@@ -1,4 +1,6 @@
 <script lang="ts">
+import { path, shell } from "@tauri-apps/api";
+
 import { appDir } from "@tauri-apps/api/path";
 
 import { Command } from "@tauri-apps/api/shell";
@@ -12,18 +14,20 @@ import { ShowPathModal, VulnusPath } from "../StoreData";
 
 
 	async function openLauncherPath() {
-		let dir = `${await launcherDir()}\\`;
+		let dir = `${await launcherDir()}${path.sep}`;
 		console.log(dir)
-		new Command('ope',[dir]).spawn().then(ch=>{
-			// the h
-		});
+		shell.open(dir)
+		// new Command('ope',[dir]).spawn().then(ch=>{
+		// 	// the h
+		// });
 	}
 	async function openDataPath() {
-		let data_dir = `${await getDataDir()}\\`
+		let data_dir = `${await getDataDir()}${path.sep}`
 		console.log(data_dir)
-		new Command('ope',[data_dir]).spawn().then(ch=>{
-			// the h
-		});
+		shell.open(data_dir);
+		// new Command('ope',[data_dir]).spawn().then(ch=>{
+		// 	// the h
+		// });
 	}
 	onMount(async()=>{
 		VulnusPath.set(await launcherDir());
