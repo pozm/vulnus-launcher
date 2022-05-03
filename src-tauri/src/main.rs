@@ -3,9 +3,11 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs;
-use std::io::Cursor;
+use std::fs::{self, OpenOptions, Permissions};
+use std::io::{Cursor, Write};
+use std::os::unix::prelude::OpenOptionsExt;
 use std::path::Path;
+use std::process::Command;
 use tauri::api::path::desktop_dir;
 use tauri::Runtime;
 use vulnus_launcher::{
@@ -39,7 +41,10 @@ fn main() {
 #[tauri::command]
 async fn check_vulnus_tag(tag: String) -> bool {
     let dir = get_vulnus_dir(Some(&tag));
+	#[cfg(target_os="windows")]
     let path_to_vulnus = dir.join("vulnus.exe");
+	#[cfg(target_os="macos")]
+    let path_to_vulnus = dir.join("BuildMac.app");
     println!("EXISTS? {:?}", dir);
     path_to_vulnus.exists()
 }
@@ -69,10 +74,29 @@ async fn install_vulnus_progress<R: Runtime>(
     println!("extracting.");
     zip.extract(&vulnus_dir);
 
-    println!("installing symlinks.");
-
+	
+	#[cfg(target_os="macos")]
+	{
+		println!("setting up fix.sh");
+		let vulnus_fix_file = vulnus_dir.join("fix.sh");
+		let mut fix_file = OpenOptions::new()
+			.truncate(true)
+			.write(true)
+			.create(true)
+			.mode(111)
+			.open(&vulnus_fix_file).or(Err("failed to open fix.sh"))?;
+		let macos_fixer_content = include_bytes!("../../assets/mac-fix.sh");
+		fix_file.write_all(macos_fixer_content);
+		println!("fixing macos {:?}", vulnus_fix_file);
+		let cmd_out = Command::new(vulnus_fix_file)
+			.current_dir(&vulnus_dir)
+			.arg(vulnus_dir.join("BuildMac.app"))
+			.output();
+		println!("output {:?}",cmd_out); //h
+	}
+	println!("installing symlinks.");
     install_symlinks(&tag);
-
+	#[cfg(target_os="windows")]
     if desktop {
         println!("make desktop shortcut.");
         let vulnus_exe = vulnus_dir.join("vulnus.exe");
@@ -81,6 +105,5 @@ async fn install_vulnus_progress<R: Runtime>(
             symlink::symlink_file(vulnus_exe, &vulnus_desktop).unwrap();
         }
     }
-
     return Ok(());
 }
