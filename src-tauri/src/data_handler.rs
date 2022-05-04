@@ -1,12 +1,9 @@
 use std::path::PathBuf;
 
-use crate::UserSettings::{UserSettings, USER_SETTINGS};
-use tauri::Runtime;
+use crate::user_settings::{UserSettings, USER_SETTINGS};
 
 #[tauri::command]
-pub async fn get_data<R: Runtime>(
-    app: tauri::AppHandle<R>,
-    window: tauri::Window<R>,
+pub async fn get_data(
 ) -> Result<UserSettings, String> {
     let data = USER_SETTINGS
         .read()
@@ -14,9 +11,7 @@ pub async fn get_data<R: Runtime>(
     Ok((*data).clone())
 }
 #[tauri::command]
-pub async fn set_data<R: Runtime>(
-    app: tauri::AppHandle<R>,
-    window: tauri::Window<R>,
+pub async fn set_data(
     new: UserSettings,
 ) -> Result<(), String> {
     new.save()?;
@@ -25,9 +20,7 @@ pub async fn set_data<R: Runtime>(
     Ok(())
 }
 #[tauri::command]
-pub async fn set_path<R: Runtime>(
-    app: tauri::AppHandle<R>,
-    window: tauri::Window<R>,
+pub async fn set_path(
     path_to: PathBuf,
 ) -> Result<(), String> {
     let mut dat = USER_SETTINGS.write().or(Err("unable to open settings"))?;
@@ -42,6 +35,6 @@ pub async fn get_save_path() -> Result<PathBuf, String> {
     Ok(parent.to_path_buf())
 }
 #[tauri::command]
-pub async fn dir_exist<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>,dir:PathBuf) -> bool {
+pub async fn dir_exist(dir:PathBuf) -> bool {
   dir.exists()
 }

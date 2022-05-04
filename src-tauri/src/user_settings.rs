@@ -75,7 +75,7 @@ struct FileWrapper(File);
 
 impl Writer for FileWrapper {
 	fn write(&mut self, bytes: &[u8]) -> Result<(), bincode::error::EncodeError> {
-		self.0.write(bytes);
+		self.0.write(bytes).unwrap();
 		Ok(())
 	}
 }

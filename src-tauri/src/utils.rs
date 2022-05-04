@@ -2,7 +2,7 @@ use std::{path::PathBuf, cmp::min, fs, io::Write};
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 use tauri::Runtime;
-use crate::UserSettings::USER_SETTINGS;
+use crate::user_settings::USER_SETTINGS;
 
 #[derive(Serialize, Deserialize, Clone)]
 enum InstallProgressState {
@@ -68,7 +68,7 @@ pub fn set_as_safe<S>(p:S) -> Result<(),String> where S: Into<PathBuf> {
 	println!("xtr: {:?}",xattr_output);
 	Ok(())
 }
-pub fn install_symlinks(tag: &str) {
+pub fn install_symlinks(tag: &str) -> Result<(),String> {
     let launcher_dir = get_vulnus_dir(None);
     let tag_dir = get_vulnus_dir(Some(tag));
 
@@ -92,8 +92,9 @@ pub fn install_symlinks(tag: &str) {
         launcher_settings.display(),
         tag_dir.join("settings.json").display()
     );
-    symlink::symlink_file(&launcher_settings, tag_dir.join("settings.json"));
-    symlink::symlink_dir(&launcher_maps, tag_dir.join("maps"));
+    symlink::symlink_file(&launcher_settings, tag_dir.join("settings.json")).or(Err("Unable to make settings symlink"))?;
+    symlink::symlink_dir(&launcher_maps, tag_dir.join("maps")).or(Err("Unable to make settings symlink"))?;
+	Ok(())
 }
 
 pub async fn download_item<S, R:Runtime>(url:&str,identifier:S, window: &tauri::Window<R>) -> Result<Vec<u8>,String> where S : Into<String> {
@@ -111,7 +112,9 @@ pub async fn download_item<S, R:Runtime>(url:&str,identifier:S, window: &tauri::
 	
 	let mut download_state = InstallProgressData::new(total_size,&identifier.into());
 	
-	window.emit("server://install-progress", &download_state);
+	if let Err(b) = window.emit("server://install-progress", &download_state) {
+		eprintln!("Failed to emit install progress: {}",b);
+	}
 
     let mut downloaded: u64 = 0;
     let mut stream = res.bytes_stream();
@@ -124,10 +127,14 @@ pub async fn download_item<S, R:Runtime>(url:&str,identifier:S, window: &tauri::
 		file_data.extend(chunk);
         downloaded = new;
 		download_state.update(downloaded);
-        window.emit("server://install-progress", &download_state);
-    }
+		if let Err(b) = window.emit("server://install-progress", &download_state) {
+			eprintln!("Failed to emit install progress: {}",b);
+		}    
+	}
 	download_state.done();
-	window.emit("server://install-progress", &download_state);
+	if let Err(b) = window.emit("server://install-progress", &download_state) {
+		eprintln!("Failed to emit install progress: {}",b);
+	}
 
 	Ok(file_data)
 }

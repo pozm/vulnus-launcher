@@ -2,7 +2,7 @@ use std::io::Cursor;
 
 use tauri::Runtime;
 
-use crate::{UserSettings::{USER_SETTINGS, ModData}, utils::{download_item, get_vulnus_dir, BEPINEX_ZIP}};
+use crate::{user_settings::{USER_SETTINGS, ModData}, utils::{download_item, get_vulnus_dir, BEPINEX_ZIP}};
 
 const MOD_LIST_FILE:&str = "https://gist.githubusercontent.com/pozm/36652eea0e7652b76eb26d8abf71e939/raw/temp_mod_list.json";
 
@@ -16,7 +16,7 @@ pub async fn update_mods() -> Result<(),String> {
 }
 
 #[tauri::command]
-pub async fn fetch_mods<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>) -> Result<(), String> {
+pub async fn fetch_mods() -> Result<(), String> {
 
 	update_mods().await?;
 
@@ -36,7 +36,7 @@ pub async fn install_bepinex<R: Runtime>(
 	let mut read = Cursor::new(zip_file);
     let mut zip = zip::ZipArchive::new(&mut read).unwrap();
     println!("extracting.");
-    zip.extract(&vulnus_dir);
+    zip.extract(&vulnus_dir).or(Err("Unable to extract zip"))?;
 	Ok(())
 }
 #[tauri::command]

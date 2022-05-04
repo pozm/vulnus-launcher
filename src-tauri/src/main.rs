@@ -3,19 +3,15 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs::{self, OpenOptions, Permissions};
-use std::io::{Cursor, Write};
-use std::os::unix::prelude::{OpenOptionsExt, PermissionsExt};
-use std::path::Path;
-use std::process::Command;
+use std::fs::{self};
+use std::io::{Cursor};
 use tauri::api::path::desktop_dir;
 use tauri::Runtime;
-use vulnus_launcher::utils::set_as_safe;
 use vulnus_launcher::{
 	utils::{download_item, get_vulnus_dir, install_symlinks, get_vulnus_download},
-	UserSettings::USER_SETTINGS,
-	Modding::{self, update_mods},
-	DataHandler
+	user_settings::USER_SETTINGS,
+	modding::{self},
+	data_handler
 };
 
 fn main() {
@@ -25,15 +21,15 @@ fn main() {
             check_vulnus_tag,
             remove_vulnus,
             install_vulnus_progress, 
-            Modding::install_bepinex,
-            Modding::check_bepinex,
-            Modding::fetch_mods,
-            Modding::install_mod,
-            DataHandler::get_data,
-            DataHandler::get_save_path,
-            DataHandler::set_path,
-            DataHandler::set_data,
-            DataHandler::dir_exist
+            modding::install_bepinex,
+            modding::check_bepinex,
+            modding::fetch_mods,
+            modding::install_mod,
+            data_handler::get_data,
+            data_handler::get_save_path,
+            data_handler::set_path,
+            data_handler::set_data,
+            data_handler::dir_exist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -73,11 +69,13 @@ async fn install_vulnus_progress<R: Runtime>(
     let mut read = Cursor::new(zip_file);
     let mut zip = zip::ZipArchive::new(&mut read).unwrap();
     println!("extracting.");
-    zip.extract(&vulnus_dir);
+    zip.extract(&vulnus_dir).or(Err("unable to extract zip"))?;
 
 	
 	#[cfg(target_os="macos")]
 	{
+		use vulnus_launcher::utils::set_as_safe;
+
 		println!("running macos patches.");
 		//this library needs to be put into local libs so that it can be found and loaded.
 		fs::copy(vulnus_dir.join("BuildMac.app/Contents/Frameworks/UnityPlayer.dylib"), "/usr/local/lib/libUnityPlayer.dylib").unwrap();
@@ -90,7 +88,9 @@ async fn install_vulnus_progress<R: Runtime>(
 		println!("complete.")
 	}
 	println!("installing symlinks.");
-    install_symlinks(&tag);
+    if let Err(sme) = install_symlinks(&tag) {
+		eprintln!("unable to install symlinks: {}", sme);
+	}
 	#[cfg(target_os="windows")]
     if desktop {
         println!("make desktop shortcut.");
