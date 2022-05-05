@@ -1,5 +1,24 @@
-# Vulnus launcher
-This is an unofficial launcher for vulnus.
+<!-- trololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololol -->
+<br />
+<p align="center">
+  <a href="https://github.com/RiskiVR/BSLegacyLauncher">
+    <img src="https://github.com/pozm/vulnus-launcher/blob/master/Media/VulnusLauncherLogo.png" alt="Logo" width="250" height="250">
+  </a>
+
+  <h3 align="center">Vulnus Launcher</h3>
+
+  <p align="center">
+    Simple and fancy launcher designed to download and launch any version of vulnus easily and quickly.
+    <br />
+    <a href="https://discord.gg/vulnus">Official Vulnus Discord</a>
+    ·
+    <a href="https://github.com/pozm/vulnus-launcher/issues">Report Bug</a>
+    ·
+    <a href="https://github.com//pozm/vulnus-launcher/issues">Request Feature</a>
+	·
+    <a href="https://github.com/pozm/vulnus-launcher/releases">Releases</a>
+  </p>
+</p>
 
 ## usage
 To use go to the releases and download the most recent one!
