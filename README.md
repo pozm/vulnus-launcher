@@ -10,7 +10,7 @@
   <p align="center">
     Simple and fancy launcher designed to download and launch any version of vulnus easily and quickly.
     <br />
-    <a href="https://discord.gg/vulnus">Official Vulnus Discord</a>
+    <a href="https://discord.gg/vulnus">Vulnus Discord</a>
     ·
     <a href="https://github.com/pozm/vulnus-launcher/issues">Report Bug</a>
     ·
