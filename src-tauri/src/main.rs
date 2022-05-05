@@ -5,7 +5,6 @@
 
 use std::fs::{self};
 use std::io::{Cursor};
-use tauri::api::path::desktop_dir;
 use tauri::Runtime;
 use vulnus_launcher::{
 	utils::{download_item, get_vulnus_dir, install_symlinks, get_vulnus_download},
@@ -75,6 +74,8 @@ async fn install_vulnus_progress<R: Runtime>(
 	#[cfg(target_os="macos")]
 	{
 		use vulnus_launcher::utils::set_as_safe;
+		use std::fs::Permissions;
+		use std::os::unix::fs::PermissionsExt;
 
 		println!("running macos patches.");
 		//this library needs to be put into local libs so that it can be found and loaded.
@@ -82,9 +83,9 @@ async fn install_vulnus_progress<R: Runtime>(
 		// by default, it will be marked as unsafe, and you will not be able to run it.
 		set_as_safe("/usr/local/lib/libUnityPlayer.dylib")?;
 		// allow it to be executed, making it "runable"
-		fs::set_permissions(vulnus_dir.join("BuildMac.app/Contents/Macos/Vulnus"), Permissions::from_mode(111));
+		fs::set_permissions(vulnus_dir.join("BuildMac.app/Contents/Macos/Vulnus"), Permissions::from_mode(111)).or(Err("unable to set permissions"))?;
 		// consistency with windows.
-		fs::rename(vulnus_dir.join("BuildMac.app"), vulnus_dir.join("Vulnus.app"));
+		fs::rename(vulnus_dir.join("BuildMac.app"), vulnus_dir.join("Vulnus.app")).or(Err("unable to rename app"))?;
 		println!("complete.")
 	}
 	println!("installing symlinks.");
@@ -93,6 +94,7 @@ async fn install_vulnus_progress<R: Runtime>(
 	}
 	#[cfg(target_os="windows")]
     if desktop {
+		use tauri::api::path::desktop_dir;
         println!("make desktop shortcut.");
         let vulnus_exe = vulnus_dir.join("vulnus.exe");
         let vulnus_desktop = desktop_dir().unwrap().join(format!("vulnus_{}.exe", &tag));
@@ -100,5 +102,10 @@ async fn install_vulnus_progress<R: Runtime>(
             symlink::symlink_file(vulnus_exe, &vulnus_desktop).unwrap();
         }
     }
+	#[cfg(unix)]
+	if desktop {
+		println!("impl")
+	}
+
     return Ok(());
 }
