@@ -11,6 +11,8 @@ rust-version = "1.57"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = ["maps_importer"]
 [build-dependencies]
 tauri-build = { version = "1.0.0-rc.5", features = [] }
 
@@ -18,7 +20,7 @@ tauri-build = { version = "1.0.0-rc.5", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.0-rc.5", features = ["api-all"] }
-tokio = { version = "1.17.*", features= ["full"] }
+tokio = { version = "1.18.*", features= ["full"] }
 
 
 futures-util = "0.3.21"

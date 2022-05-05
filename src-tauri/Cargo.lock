@@ -398,7 +398,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74f89d248799e3f15f91b70917f65381062a01bb8e222700ea0e5a7ff9785f9c"
 dependencies = [
  "byteorder",
- "uuid",
+ "uuid 0.8.2",
 ]
 
 [[package]]
@@ -1805,6 +1805,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62bb907fe88d54d8d9ce32a3cceab4218ed2f6b7d35617cafe9adf84e43919cb"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "maps_importer"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "tokio",
+ "uuid 1.0.0",
+ "zip",
 ]
 
 [[package]]
@@ -3385,7 +3395,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "url",
- "uuid",
+ "uuid 0.8.2",
  "windows 0.30.0",
 ]
 
@@ -3420,7 +3430,7 @@ dependencies = [
  "sha2",
  "tauri-utils",
  "thiserror",
- "uuid",
+ "uuid 0.8.2",
  "walkdir",
 ]
 
@@ -3452,7 +3462,7 @@ dependencies = [
  "serde_json",
  "tauri-utils",
  "thiserror",
- "uuid",
+ "uuid 0.8.2",
  "webview2-com",
  "windows 0.30.0",
 ]
@@ -3467,7 +3477,7 @@ dependencies = [
  "rand 0.8.5",
  "tauri-runtime",
  "tauri-utils",
- "uuid",
+ "uuid 0.8.2",
  "webview2-com",
  "windows 0.30.0",
  "wry",
@@ -3604,9 +3614,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.17.0"
+version = "1.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2af73ac49756f3f7c01172e34a23e5d0216f6c32333757c2c61feb2bbff5a5ee"
+checksum = "dce653fb475565de9f6fb0614b28bca8df2c430c0cf84bcd9c843f15de5414cc"
 dependencies = [
  "bytes",
  "libc",
@@ -3826,6 +3836,15 @@ name = "uuid"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
+dependencies = [
+ "getrandom 0.2.6",
+]
+
+[[package]]
+name = "uuid"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8cfcd319456c4d6ea10087ed423473267e1a071f3bc0aa89f80d60997843c6f0"
 dependencies = [
  "getrandom 0.2.6",
 ]
