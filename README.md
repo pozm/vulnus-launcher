@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/RiskiVR/BSLegacyLauncher">
-    <img src="https://github.com/pozm/vulnus-launcher/blob/master/Media/VulnusLauncherLogo.png" alt="Logo" width="250" height="250">
+    <img src="https://github.com/pozm/vulnus-launcher/blob/master/Media/VulnusLauncherLogox.png" alt="Logo" width="250" height="250">
   </a>
 
   <h3 align="center">Vulnus Launcher</h3>
