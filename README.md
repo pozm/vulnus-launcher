@@ -1,8 +1,8 @@
 <!-- trololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololololololololtrololololololololololololol -->
 <br />
 <p align="center">
-  <a href="https://github.com/RiskiVR/BSLegacyLauncher">
-    <img src="https://github.com/pozm/vulnus-launcher/blob/master/Media/VulnusLauncherLogox.png" alt="Logo" width="250" height="250">
+  <a href="https://github.com/pozm/vulnus-launcher">
+    <img src="https://raw.githubusercontent.com/pozm/vulnus-launcher/master/Media/VulnusLauncherLogox.png" alt="Logo" width="250" height="250">
   </a>
 
   <h3 align="center">Vulnus Launcher</h3>
