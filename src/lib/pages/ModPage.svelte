@@ -9,6 +9,8 @@ import type { IInstallProgress } from "../DataTypes";
 import { getPercent } from "../SharedFunctions";
 import { Data } from "../store";
 import { formatRelative } from 'date-fns'
+import binIco from '../../assets/svg/binico.svg';
+
 	let UnlistenToProgress : ReturnType<typeof event.listen>;
 		let installingVersion = false;
 	let installingText = "downloading"
@@ -65,6 +67,13 @@ import { formatRelative } from 'date-fns'
 			})
 		},console.error)
 	}
+	function removeMod(idx) {
+		invoke("remove_mod",{idx}).then(()=>{
+			Data.Store.get.reload().then(_=>{
+				mods = Data.Store.get.data.modding.mods
+			})
+		},console.error)
+	}
 
 	// let mods = writable([])
 	$: mods = Data.Store.get.data.modding.mods
@@ -77,10 +86,10 @@ import { formatRelative } from 'date-fns'
 	{#await bepinexInstalled then bInstalled}
 	<!-- {@debug bInstalled} -->
 		{#if bInstalled}
-			<div class="grid w-full grid-cols-3" >
+			<div class="flex w-full flex-wrap flex-row justify-around" >
 				{#each mods as mod,i}
 					
-					<div class="w-full h-52 bg-zinc-800 rounded-xl p-4 border border-solid border-zinc-600 shadow-lg text-neutral-400 flex flex-col" >
+					<div class="w-80 h-52 bg-zinc-800 rounded-xl p-4 border border-solid border-zinc-600 shadow-lg text-neutral-400  flex flex-col mt-4" >
 						<h3 class="text-xl" >{mod.name}</h3>
 						<div class="w-full flex flex-col" >
 							<ol>
@@ -92,8 +101,17 @@ import { formatRelative } from 'date-fns'
 								</li>
 							</ol>
 						</div>
-						<div class=" mt-auto w-full flex flex-row  justify-end" >
-							<button disabled={mod?.installed ?? false}  on:click={installMod.bind(this,i)} class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg">{mod?.installed ? "Installed" : "Install"}</button>
+						<div class=" mt-auto w-full flex flex-row  justify-end space-x-4" >
+							{#if mod?.installed ?? false}
+							
+								<button
+								on:click={removeMod.bind(i)}
+								class="py-2 min-w-12 px-3 shadow-sm transition-colors hover:bg-rose-600 text-gray-100 bg-rose-500 disabled:bg-rose-600/50 mt-2 rounded-lg"
+								><svelte:component class="h-4 w-4" this={binIco} /></button
+							>
+							
+							{/if}
+							<button disabled={mod?.installed ?? false}  on:click={installMod.bind(this,i)} class="py-2 shadow-sm px-12 transition-colors hover:bg-emerald-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg">{mod?.installed ? "Installed" : "Install"}</button>
 						</div>
 					</div>
 				{/each}

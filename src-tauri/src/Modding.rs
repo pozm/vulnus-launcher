@@ -11,7 +11,10 @@ pub async fn update_mods() -> Result<(),String> {
 	let mod_list = reqwest::get(MOD_LIST_FILE).await.or(Err("Unable update mod lists"))?.json::<Vec<ModData>>().await.or(Err("Unable to parse mod lists"))?;
 
 	let mut set = USER_SETTINGS.write().or(Err("Unable to open settings"))?;
+	let old_mods : Vec<ModData> = (*set).modding.mods.clone();
+
 	(*set).modding.mods = mod_list;
+	/// thanks rust-analyzer for being completely shit and not loading any information about the variables, im now going to commit suicide and wait until it works again until i work on this project.
 	Ok(())
 }
 
@@ -47,11 +50,23 @@ pub async fn check_bepinex() -> Result<bool,String> {
 }
 #[tauri::command(async)]
 pub async fn install_mod<R: Runtime>(_app: tauri::AppHandle<R>, window: tauri::Window<R>,idx:u32) -> Result<(), String> {
-	let mut set = USER_SETTINGS.read().or(Err("unable to open settings"))?.clone();
+	let mut set = USER_SETTINGS.write().or(Err("unable to open settings"))?.clone();
 	set.modding.mods[idx as usize].clone()
 		.install(&window).await?;
 	set.modding.mods[idx as usize]
-		.installed = Some(true);
+		.installed = true;
+	set.save()?;
+	(*USER_SETTINGS.write().or(Err("unable to open settings"))?) = set;
+
+  	Ok(())
+}
+#[tauri::command(async)]
+pub async fn remove_mod<R: Runtime>(_app: tauri::AppHandle<R>, _window: tauri::Window<R>,idx:u32) -> Result<(), String> {
+	let mut set = USER_SETTINGS.write().or(Err("unable to open settings"))?.clone();
+	set.modding.mods[idx as usize].clone()
+		.remove().await?;
+	set.modding.mods[idx as usize]
+		.installed = false;
 	set.save()?;
 	(*USER_SETTINGS.write().or(Err("unable to open settings"))?) = set;
 

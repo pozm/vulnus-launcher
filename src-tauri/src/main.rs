@@ -24,6 +24,7 @@ fn main() {
             modding::check_bepinex,
             modding::fetch_mods,
             modding::install_mod,
+            modding::remove_mod,
             data_handler::get_data,
             data_handler::get_save_path,
             data_handler::set_path,
