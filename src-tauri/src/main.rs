@@ -3,13 +3,13 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs::{self};
+use std::fs;
 use std::io::{Cursor};
 use tauri::Runtime;
 use vulnus_launcher::{
 	utils::{download_item, get_vulnus_dir, install_symlinks, get_vulnus_download},
 	user_settings::USER_SETTINGS,
-	modding::{self},
+	modding,
 	data_handler
 };
 

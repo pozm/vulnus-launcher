@@ -105,7 +105,7 @@ import binIco from '../../assets/svg/binico.svg';
 							{#if mod?.installed ?? false}
 							
 								<button
-								on:click={removeMod.bind(i)}
+								on:click={removeMod.bind(this,i)}
 								class="py-2 min-w-12 px-3 shadow-sm transition-colors hover:bg-rose-600 text-gray-100 bg-rose-500 disabled:bg-rose-600/50 mt-2 rounded-lg"
 								><svelte:component class="h-4 w-4" this={binIco} /></button
 							>

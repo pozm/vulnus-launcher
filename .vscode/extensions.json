@@ -1,6 +1,6 @@
 {
   "recommendations": [
     "svelte.svelte-vscode",
-    "matklad.rust-analyzer"
+    "rust-lang.rust-analyzer"
   ]
 }

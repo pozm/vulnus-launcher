@@ -2,19 +2,23 @@ use std::io::Cursor;
 
 use tauri::Runtime;
 
-use crate::{user_settings::{USER_SETTINGS, ModData}, utils::{download_item, get_vulnus_dir, BEPINEX_ZIP}};
+use crate::{user_settings::{USER_SETTINGS, ModData}, utils::{get_vulnus_dir, download_item, BEPINEX_ZIP}};
 
 const MOD_LIST_FILE:&str = "https://gist.githubusercontent.com/pozm/36652eea0e7652b76eb26d8abf71e939/raw/temp_mod_list.json";
 
 
 pub async fn update_mods() -> Result<(),String> {
 	let mod_list = reqwest::get(MOD_LIST_FILE).await.or(Err("Unable update mod lists"))?.json::<Vec<ModData>>().await.or(Err("Unable to parse mod lists"))?;
-
+	
 	let mut set = USER_SETTINGS.write().or(Err("Unable to open settings"))?;
 	let old_mods : Vec<ModData> = (*set).modding.mods.clone();
 
-	(*set).modding.mods = mod_list;
-	/// thanks rust-analyzer for being completely shit and not loading any information about the variables, im now going to commit suicide and wait until it works again until i work on this project.
+	let new_mods : Vec<ModData> = mod_list.iter().filter(|m| !old_mods.iter().any(|om| om.name == m.name || m.last_updated <= om.last_updated)).cloned().collect();
+
+	println!("old : {:#?} \nnew : {:#?}",old_mods,new_mods);
+
+	(*set).modding.mods = old_mods.iter().cloned().chain(new_mods).collect();
+
 	Ok(())
 }
 
