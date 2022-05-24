@@ -20,6 +20,11 @@
   </p>
 </p>
 
+
+# notice of archival
+i don't want to work on this anymore so all further development will be halted. future updates to the game may break the launcher.
+
+
 ## usage
 To use go to the releases and download the most recent one!
 
