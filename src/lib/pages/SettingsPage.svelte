@@ -8,7 +8,7 @@ import { onMount } from "svelte";
 
 import { getDataDir, launcherDir } from "../SharedFunctions";
 import { Data } from "../store";
-import { ShowPathModal, VulnusPath } from "../StoreData";
+import { ModsSource, ShowPathModal, VulnusPath,ShowSourceModal } from "../StoreData";
 
 
 
@@ -31,6 +31,7 @@ import { ShowPathModal, VulnusPath } from "../StoreData";
 	}
 	onMount(async()=>{
 		VulnusPath.set(await launcherDir());
+		ModsSource.set(Data.Store.get.data.modding.source_list)
 	})
 
 </script>
@@ -45,6 +46,10 @@ import { ShowPathModal, VulnusPath } from "../StoreData";
 			<div class="flex flex-row w-full content-center items-center" >
 				<p class="text-gray-300 text-xl mr-auto" >Vulnus Path: <span class="text-pink-300" >{$VulnusPath}</span></p>
 				<button on:click={()=>{ShowPathModal.set(true)}}  class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-cyan-600 text-gray-100 bg-cyan-500 disabled:bg-cyan-600/50 mt-2 rounded-lg">Change</button>
+			</div>
+			<div class="flex flex-row w-full content-center items-center" >
+				<p class="text-gray-300 text-xl mr-auto" >Vulnus Path: <span class="text-pink-300 break-all" >{$ModsSource}</span></p>
+				<button on:click={()=>{ShowSourceModal.set(true)}}  class="ml-auto py-2 shadow-sm px-12 transition-colors hover:bg-cyan-600 text-gray-100 bg-cyan-500 disabled:bg-cyan-600/50 mt-2 rounded-lg">Change</button>
 			</div>
 		<div class="flex flex-row w-full content-center items-center" >
 			<p class="text-gray-300 text-xl mr-auto" >Open launcher folder</p>

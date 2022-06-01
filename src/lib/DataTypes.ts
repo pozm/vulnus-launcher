@@ -18,6 +18,7 @@ export interface IDataStoreTypes {
 }
 export interface IDataStoreModding {
 	mods : IModData[]
+	source_list : string;
 }
 export interface IModData {
 	available_versions:string[],

@@ -2,13 +2,13 @@ use std::io::Cursor;
 
 use tauri::Runtime;
 
-use crate::{user_settings::{USER_SETTINGS, ModData}, utils::{get_vulnus_dir, download_item, BEPINEX_ZIP}};
+use crate::{user_settings::{ModData, USER_SETTINGS}, utils::{get_vulnus_dir, download_item, BEPINEX_ZIP}};
 
-const MOD_LIST_FILE:&str = "https://gist.githubusercontent.com/pozm/36652eea0e7652b76eb26d8abf71e939/raw/temp_mod_list.json";
 
 
 pub async fn update_mods() -> Result<(),String> {
-	let mod_list = reqwest::get(MOD_LIST_FILE).await.or(Err("Unable update mod lists"))?.json::<Vec<ModData>>().await.or(Err("Unable to parse mod lists"))?;
+	let set_ro = USER_SETTINGS.read().or(Err("Unable to open settings"))?.clone();
+	let mod_list = reqwest::get(set_ro.modding.source_list.clone()).await.or(Err("Unable update mod lists"))?.json::<Vec<ModData>>().await.or(Err("Unable to parse mod lists"))?;
 	
 	let mut set = USER_SETTINGS.write().or(Err("Unable to open settings"))?;
 	let old_mods : Vec<ModData> = (*set).modding.mods.clone();

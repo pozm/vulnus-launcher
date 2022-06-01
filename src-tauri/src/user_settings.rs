@@ -6,7 +6,7 @@ use serde::{Serialize, Deserialize};
 use tauri::Runtime;
 use tauri::api::path::{data_dir, local_data_dir};
 use tokio::fs as fs_tokio;
-use std::fs::{File, create_dir_all, self};
+use std::fs::{File, create_dir_all, self, remove_file};
 use std::{sync::RwLock, path::PathBuf, fs::OpenOptions};
 use std::io::prelude::*;
 
@@ -47,6 +47,8 @@ pub struct ModData {
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct ModdingData {
 	pub mods: Vec<ModData>,
+	pub custom_source : bool,
+	pub source_list : String,
 }
 
 #[derive(Debug, Serialize, Deserialize,Clone)]
@@ -121,7 +123,7 @@ impl UserSettings{
 			launcher: LauncherSettings{
 				latest_version: "".to_string()
 			},
-			modding: ModdingData { mods: vec![] }
+			modding: ModdingData { mods: vec![],custom_source:false,source_list:"https://gist.githubusercontent.com/pozm/36652eea0e7652b76eb26d8abf71e939/raw/temp_mod_list.json".to_string() }
 		}
 	}
 	pub fn get_save_dir() -> Result<PathBuf,String> {
@@ -142,13 +144,17 @@ impl UserSettings{
 
 		let data_file = OpenOptions::new().read(true).create(true).write(true).open(data_path).or(Err("Unable to make data file"))?;
 		let config = bincode::config::standard();
-		let return_data : Self = match bincode::serde::decode_from_reader(FileWrapper(data_file), config) {
+		let mut return_data : Self = match bincode::serde::decode_from_reader(FileWrapper(data_file), config) {
 			Ok(ret_data) => ret_data,
 			Err(e) => {
 				println!("unable to read data file: {} | returning defaults.",e);
 				Self::new() //
 			},
 		};
+		// prevent bincode from reading another value by accident
+		if !return_data.modding.custom_source {
+			return_data.modding.source_list = "https://gist.githubusercontent.com/pozm/36652eea0e7652b76eb26d8abf71e939/raw/temp_mod_list.json".to_string();
+		}
 		// println!("got data {:#?}",return_data);
 		Ok(return_data)
 	}
@@ -170,5 +176,11 @@ impl UserSettings{
 		bincode::serde::encode_into_writer(&self, FileWrapper(data_file), config).or(Err("Unable to write data file"))?;
 
 		Ok(())
+	}
+	pub fn reset() -> Result<(),String> {
+		let data_path = Self::get_save_dir()?;
+		remove_file(data_path).or(Err("Unable to remove data file"))?;
+		Ok(())
+
 	}
 }

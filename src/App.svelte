@@ -5,7 +5,7 @@ import { dialog,fs,invoke, path } from "@tauri-apps/api";
 
 import IndexPage from "./lib/pages/IndexPage.svelte";
 import { Data } from "./lib/store";
-import { ShowPathModal,ShowInstallModal, VulnusPath, VersionsAvailable, LatestVersionsAvailable, ChosenVersion } from './lib/StoreData'
+import { ShowPathModal,ShowSourceModal, VulnusPath, VersionsAvailable, LatestVersionsAvailable, ChosenVersion } from './lib/StoreData'
 import {event} from '@tauri-apps/api'
 import NotificationHandler from './Components/NotificationHandler.svelte';
 import { onDestroy, onMount } from 'svelte';
@@ -19,6 +19,7 @@ import { fade, fly } from 'svelte/transition';
 import InfoPage from './lib/pages/InfoPage.svelte';
 
 	let updatePath = "";
+	let updateSource = "";
 	let PathActive = false;
 	let awaitingData : ReturnType<typeof Data.Store.get.reload>
 	onMount(async ()=>{
@@ -78,6 +79,14 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 			updatePath = "";
 		})
 	}
+	function SetSource() {
+		Data.Store.get.reload();
+		ShowSourceModal.set(false);
+		Data.Store.get.data.modding.source_list = updatePath
+		Data.Store.get.write();
+		// invoke("set_path",{pathTo:updatePath}).then(()=>{
+		// })
+	}
 	$: {
 		invoke<boolean>("dir_exist",{dir: updatePath}).then(d=>{
 			PathIsInvalid=!d;
@@ -113,6 +122,33 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 </script>
 <div class="flex min-h-screen" >
 	<NotificationHandler/>
+	<Modal show={$ShowSourceModal} >
+		<h1 class="text-gray-200 text-2xl" >Hi,</h1>
+		<h3 class="text-gray-300 text-lg">To change the source of mods please enter the url to the source list</h3>
+		<div class="relative">
+			<label for="password" class="block text-sm font-medium text-gray-400" >Please enter the url to the source list</label>
+			<input on:blur={()=>{
+				PathActive=false;
+			}} on:focus={(v)=>{
+				PathActive=true
+			}} bind:value={updateSource} id="path" name="path" class={`appearance-none w-full text-neutral-200 placeholder-zinc-400 transition-colors bg-neutral-900 focus:outline-none focus:ring-pink-400 focus:border-pink-400 focus:ring-1 rounded-lg px-2 py-2 shadow-sm border`} placeholder="https://....">
+			<!-- <button on:click={GetVulnusPath} class="absolute right-2 bottom-2.5 w-6 h-6" >
+				<svg xmlns="http://www.w3.org/2000/svg" class={`h-6 w-6 ${PathActive ? "text-pink-200" : "text-zinc-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+				</svg>
+			</button> -->
+		</div>
+		<div class="flex justify-end" >
+			<!-- {#if PathIsInvalid}
+				<p class="mr-auto mt-2 text-sm text-red-400 select-none " >The path you have provided is is invalid </p>
+				
+			{/if} -->
+			<div>
+				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-red-600 text-gray-100 bg-red-500 disabled:bg-red-600/50 mt-2 rounded-lg" on:click="{()=>{ShowPathModal.set(false)}}">Close</button>
+				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-green-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg" on:click="{SetSource}">Save</button>
+			</div>
+		</div>
+	</Modal>
 	<Modal show={$ShowPathModal} >
 		<h1 class="text-gray-200 text-2xl" >Hi,</h1>
 		<h3 class="text-gray-300 text-lg">To change the location of the <span class="text-pink-300" >Vulnus Launcher</span> please enter a directory</h3>
