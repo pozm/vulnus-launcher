@@ -122,7 +122,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 </script>
 <div class="flex min-h-screen" >
 	<NotificationHandler/>
-	<Modal show={$ShowSourceModal} >
+	<Modal show={$ShowSourceModal} prematureClose={true} >
 		<h1 class="text-gray-200 text-2xl" >Hi,</h1>
 		<h3 class="text-gray-300 text-lg">To change the source of mods please enter the url to the source list</h3>
 		<div class="relative">
@@ -144,7 +144,7 @@ import InfoPage from './lib/pages/InfoPage.svelte';
 				
 			{/if} -->
 			<div>
-				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-red-600 text-gray-100 bg-red-500 disabled:bg-red-600/50 mt-2 rounded-lg" on:click="{()=>{ShowPathModal.set(false)}}">Close</button>
+				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-red-600 text-gray-100 bg-red-500 disabled:bg-red-600/50 mt-2 rounded-lg" on:click="{()=>{ShowSourceModal.set(false)}}">Close</button>
 				<button class="py-2 shadow-sm px-8 transition-colors hover:bg-green-600 text-gray-100 bg-emerald-500 disabled:bg-emerald-600/50 mt-2 rounded-lg" on:click="{SetSource}">Save</button>
 			</div>
 		</div>
